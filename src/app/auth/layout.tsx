@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, ReactNode } from "react";
-import { useSelector } from "react-redux";
 import Image from "next/image";
 import { Logo, Logo2 } from "../../assets";
 import { PulseLoader } from "react-spinners";
-import { RootState } from "../../redux/store"; // <-- update the path if needed
+import { RootState } from "../../redux/store";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -16,29 +16,30 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children }: AuthLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-
+  const { isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState(
     pathname.includes("register") ? "register" : "login"
   );
   const [loadingPage, setLoadingPage] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
 
-  const { token } = useSelector((state: RootState) => state.auth);
-
   useEffect(() => {
     setActiveTab(pathname.includes("register") ? "register" : "login");
   }, [pathname]);
 
   useEffect(() => {
-    if (token !== null) {
+    const storedToken =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    if (isAuthenticated || storedToken) {
       setRedirecting(true);
       setTimeout(() => {
         router.push("/");
-      }, 1000);
+      }, 2000);
     } else {
       setLoadingPage(false);
     }
-  }, [token, router]);
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -80,6 +80,7 @@ export const login = createAsyncThunk(
       });
 
       const { token, user } = response.data;
+      toast.success(response.data.message);
 
       if (typeof window !== "undefined") {
         if (rememberMe) {
@@ -114,6 +115,7 @@ export const register = createAsyncThunk(
       const response = await axios.post("/api/auth/register", userData, {
         withCredentials: true,
       });
+      toast.success(response.data.message);
 
       const token = response.data.token;
 
