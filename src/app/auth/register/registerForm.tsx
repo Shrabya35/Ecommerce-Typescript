@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
+import { useLoading } from "@/context/loadingContext";
 
 import { ClipLoader } from "react-spinners";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -12,6 +13,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { register } from "@/redux/slices/authSlice";
 
 const Register = () => {
+  const { setLoading } = useLoading();
   const dispatch = useDispatch<AppDispatch>();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -25,6 +27,10 @@ const Register = () => {
   const { loading } = useSelector((state: RootState) => state.auth);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading, setLoading]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

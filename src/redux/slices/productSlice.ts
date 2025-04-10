@@ -36,6 +36,9 @@ interface FetchProductParams {
   limit?: number;
   category?: string;
   type?: string;
+  onSale?: boolean;
+  sort?: "latest" | "oldest";
+  price?: "low" | "high";
 }
 
 interface FetchSingleProductParams {
@@ -44,7 +47,15 @@ interface FetchSingleProductParams {
 
 export const fetchProduct = createAsyncThunk(
   "product/fetchProduct",
-  async ({ page = 1, limit = 9, category, type }: FetchProductParams) => {
+  async ({
+    page = 1,
+    limit = 9,
+    category,
+    type,
+    onSale,
+    sort,
+    price,
+  }: FetchProductParams) => {
     try {
       let query = `/api/product?page=${page}&limit=${limit}`;
 
@@ -56,6 +67,17 @@ export const fetchProduct = createAsyncThunk(
         query += `&type=${type}`;
       }
 
+      if (onSale !== undefined) {
+        query += `&onSale=${onSale}`;
+      }
+
+      if (sort) {
+        query += `&sort=${sort}`;
+      }
+
+      if (price) {
+        query += `&price=${price}`;
+      }
       const res = await axios.get(query, {
         withCredentials: true,
       });

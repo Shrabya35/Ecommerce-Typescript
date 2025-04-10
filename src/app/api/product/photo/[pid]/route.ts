@@ -6,7 +6,8 @@ interface ProductParams {
   pid: string;
 }
 
-export async function GET(req: Request, { params }: { params: ProductParams }) {
+export async function GET(req: Request, context: { params: ProductParams }) {
+  const params = await context.params;
   const { pid } = params;
 
   await connectDB();
