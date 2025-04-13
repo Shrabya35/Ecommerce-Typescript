@@ -7,13 +7,14 @@ import JWT from "jsonwebtoken";
 interface LoginRequestBody {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export async function POST(req: Request) {
   await connectDB();
 
   try {
-    const { email, password }: LoginRequestBody = await req.json();
+    const { email, password, rememberMe }: LoginRequestBody = await req.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -39,24 +40,33 @@ export async function POST(req: Request) {
     }
 
     const token = JWT.sign(
-      { _id: user._id },
-      process.env.JWT_SECRET as string,
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECRET!,
       {
-        expiresIn: "100y",
+        expiresIn: rememberMe ? "30d" : "1d",
       }
     );
 
     const { password: _, ...userWithoutPassword } = user.toObject();
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: true,
         message: "Login successful",
         user: userWithoutPassword,
-        token,
       },
       { status: 200 }
     );
+
+    response.cookies.set("token", token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: rememberMe ? 30 * 24 * 60 * 60 : undefined,
+      path: "/",
+    });
+
+    return response;
   } catch (error: any) {
     return NextResponse.json(
       { error: "Error in Login", details: error.message },

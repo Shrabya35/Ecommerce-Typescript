@@ -35,6 +35,12 @@ const Navbar = () => {
   const { isAuthenticated } = useAuth();
   const { user } = useSelector((state: RootState) => state.auth);
 
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true); // Ensure the component has mounted before rendering client-side logic
+  }, []);
+
   const toggleMenu = () => setMenuOpen(!isMenuOpen);
   const closeMenu = () => setMenuOpen(false);
 
@@ -96,17 +102,17 @@ const Navbar = () => {
   const menuLinks = [
     {
       label: "Men",
-      href: "/type/men",
+      href: "/pages/men",
       icon: <IoShirtOutline className="w-5 h-5" />,
     },
     {
       label: "Women",
-      href: "/type/women",
+      href: "/pages/women",
       icon: <IoShirtOutline className="w-5 h-5" />,
     },
     {
       label: "Accessories",
-      href: "/type/accessories",
+      href: "/pages/accessories",
       icon: <IoPersonOutline className="w-5 h-5" />,
     },
     {
@@ -145,7 +151,7 @@ const Navbar = () => {
             {["men", "women", "accessories"].map((type) => (
               <Link
                 key={type}
-                href={`/type/${type}`}
+                href={`/pages/${type}`}
                 className="text-base font-medium text-gray-800 hover:text-black py-2 relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-black after:transition-all after:duration-300"
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -172,7 +178,9 @@ const Navbar = () => {
           </button>
 
           <Link
-            href={isAuthenticated ? "/profile/user" : "/auth/login"}
+            href={
+              isAuthenticated && hasMounted ? "/profile/user" : "/auth/login"
+            }
             className="p-2 rounded-full hover:bg-gray-100"
             aria-label="User Profile"
           >
@@ -185,7 +193,7 @@ const Navbar = () => {
             aria-label="Cart"
           >
             <FaShoppingBag className="w-5 h-5 text-gray-800" />
-            {(user?.shoppingBag?.length ?? 0) > 0 && (
+            {hasMounted && (user?.shoppingBag?.length ?? 0) > 0 && (
               <span className="absolute -top-1 -right-1 bg-black text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
                 {user?.shoppingBag?.length ?? 0}
               </span>
@@ -409,7 +417,7 @@ const Navbar = () => {
 
           <div className="border-t border-gray-100 p-5">
             <div className="flex flex-col items-center gap-3">
-              {isAuthenticated ? (
+              {isAuthenticated && hasMounted ? (
                 <Link
                   href="/profile/user"
                   onClick={closeMenu}
@@ -426,7 +434,7 @@ const Navbar = () => {
                   Sign In
                 </Link>
               )}
-              {!isAuthenticated && (
+              {!isAuthenticated && hasMounted && (
                 <Link
                   href="/auth/register"
                   onClick={closeMenu}

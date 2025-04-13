@@ -6,7 +6,6 @@ import { useState, useEffect, ReactNode } from "react";
 import Image from "next/image";
 import { Logo, Logo2 } from "../../assets";
 import { PulseLoader } from "react-spinners";
-import { RootState } from "../../redux/store";
 import { useAuth } from "@/hooks/useAuth";
 
 interface AuthLayoutProps {
@@ -16,7 +15,7 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children }: AuthLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, authChecked } = useAuth();
   const [activeTab, setActiveTab] = useState(
     pathname.includes("register") ? "register" : "login"
   );
@@ -28,18 +27,17 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   }, [pathname]);
 
   useEffect(() => {
-    const storedToken =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!authChecked) return;
 
-    if (isAuthenticated || storedToken) {
+    if (isAuthenticated) {
       setRedirecting(true);
       setTimeout(() => {
         router.push("/");
-      }, 2000);
+      }, 1000);
     } else {
       setLoadingPage(false);
     }
-  }, [isAuthenticated, router]);
+  }, [authChecked, isAuthenticated, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -60,7 +58,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     );
   }
 
-  if (loadingPage) {
+  if (!authChecked || loadingPage) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <PulseLoader color="#000" loading={true} size={10} />

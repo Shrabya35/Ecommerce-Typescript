@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
     if (!name || !email || !password || !phone) {
       return NextResponse.json(
-        { success: true, message: "All fields are required" },
+        { success: false, message: "All fields are required" },
         { status: 400 }
       );
     }
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { success: true, message: "Email already registered" },
+        { success: false, message: "Email already registered" },
         { status: 409 }
       );
     }
@@ -42,24 +42,33 @@ export async function POST(req: Request) {
     }).save();
 
     const token = JWT.sign(
-      { _id: user._id },
-      process.env.JWT_SECRET as string,
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECRET!,
       {
-        expiresIn: "100y",
+        expiresIn: "1d",
       }
     );
 
     const { password: _, ...userWithoutPassword } = user.toObject();
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: true,
         message: "Registration successful",
         user: userWithoutPassword,
-        token,
       },
       { status: 201 }
     );
+
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: undefined,
+      path: "/",
+    });
+
+    return response;
   } catch (error: any) {
     return NextResponse.json(
       { error: "Error in Registration", details: error.message },

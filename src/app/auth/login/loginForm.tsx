@@ -32,7 +32,7 @@ const LoginForm = () => {
     e.preventDefault();
     try {
       const result = await dispatch(
-        login({ credentials: { email, password }, rememberMe })
+        login({ credentials: { email, password, rememberMe } })
       ).unwrap();
 
       if (result && !("error" in result)) {

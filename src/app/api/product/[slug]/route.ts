@@ -16,8 +16,6 @@ export async function GET(req: Request, { params }: { params: ProductParams }) {
       .populate("category")
       .select("-image");
 
-    console.log("Product fetched successfully", slug);
-
     if (!product) {
       return NextResponse.json(
         { success: false, message: "Product not found" },

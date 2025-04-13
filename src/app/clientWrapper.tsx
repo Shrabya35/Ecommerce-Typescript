@@ -12,6 +12,8 @@ import Footer from "@/components/specific/footer";
 import Navbar from "@/components/specific/navbar";
 import Offer from "@/components/section/offer";
 import GlobalLoader from "@/components/common/globalLoader";
+import TokenHandler from "@/components/common/tokenhandler";
+
 const queryClient = new QueryClient();
 
 interface ClientWrapperProps {
@@ -24,6 +26,7 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
+        <TokenHandler />
         <GlobalLoader />
         {!pathname.startsWith("/auth") && <Offer />}
         {!pathname.startsWith("/auth") && <Navbar />}

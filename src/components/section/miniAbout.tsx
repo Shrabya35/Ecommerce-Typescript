@@ -19,7 +19,7 @@ const MiniAbout = () => {
 
         <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
           <div className=" p-6 ">
-            <p className="font-semibold text-gray-800 text-center">
+            <p className="font-semibold text-gray-800 md:text-center">
               First-class materials and innovative technologies
             </p>
             <p className="mt-1">
@@ -34,7 +34,7 @@ const MiniAbout = () => {
           </div>
 
           <div className="p-6">
-            <p className="font-semibold text-gray-800 text-center">
+            <p className="font-semibold text-gray-800 md:text-center">
               For Football Fans and Sporting Aces
             </p>
             <p className="mt-2">
@@ -48,7 +48,7 @@ const MiniAbout = () => {
           </div>
 
           <div className=" p-6 ">
-            <p className="font-semibold text-gray-800 text-center">
+            <p className="font-semibold text-gray-800 md:text-center">
               Score Now and Get Your Benefits!
             </p>
             <p className="mt-2 ">

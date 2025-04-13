@@ -18,13 +18,13 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAdmin: boolean;
+  authChecked: boolean;
   loading: boolean;
   error: string | null;
 }
 
 interface LoginParams {
-  credentials: { email: string; password: string };
-  rememberMe: boolean;
+  credentials: { email: string; password: string; rememberMe: boolean };
 }
 
 interface RegisterParams {
@@ -54,14 +54,6 @@ export const fetchUserDetails = createAsyncThunk<
     });
     const user = response.data.user;
 
-    if (typeof window !== "undefined") {
-      if (localStorage.getItem("token")) {
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        sessionStorage.setItem("user", JSON.stringify(user));
-      }
-    }
-
     return user;
   } catch (error: any) {
     const errorMsg =
@@ -73,24 +65,13 @@ export const fetchUserDetails = createAsyncThunk<
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ credentials, rememberMe }: LoginParams, { rejectWithValue }) => {
+  async ({ credentials }: LoginParams, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/login", credentials, {
         withCredentials: true,
       });
 
-      const { token, user } = response.data;
       toast.success(response.data.message);
-
-      if (typeof window !== "undefined") {
-        if (rememberMe) {
-          localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(user));
-        } else {
-          sessionStorage.setItem("token", token);
-          sessionStorage.setItem("user", JSON.stringify(user));
-        }
-      }
 
       return response.data;
     } catch (error: any) {
@@ -117,12 +98,6 @@ export const register = createAsyncThunk(
       });
       toast.success(response.data.message);
 
-      const token = response.data.token;
-
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("token", token);
-      }
-
       return response.data;
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || "Registration failed";
@@ -136,6 +111,7 @@ const initialState: AuthState = {
   user: null,
   token: null,
   isAdmin: false,
+  authChecked: false,
   loading: false,
   error: null,
 };
@@ -149,19 +125,14 @@ const authSlice = createSlice({
       state.token = null;
       state.isAdmin = false;
       state.error = null;
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      localStorage.removeItem("user");
-      sessionStorage.removeItem("user");
-    },
-    setTokenFromStorage: (state) => {
-      if (typeof window !== "undefined") {
-        const token =
-          localStorage.getItem("token") || sessionStorage.getItem("token");
-        if (token) {
-          state.token = token;
-        }
+
+      if (typeof document !== "undefined") {
+        document.cookie =
+          "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
       }
+    },
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -173,11 +144,13 @@ const authSlice = createSlice({
         checkAdminAuth.fulfilled,
         (state, action: PayloadAction<{ isAdmin: boolean }>) => {
           state.isAdmin = action.payload.isAdmin;
+          state.authChecked = true;
           state.loading = false;
         }
       )
       .addCase(checkAdminAuth.rejected, (state) => {
         state.isAdmin = false;
+        state.authChecked = true;
         state.loading = false;
       })
       .addCase(fetchUserDetails.pending, (state) => {
@@ -237,5 +210,21 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setTokenFromStorage } = authSlice.actions;
+export const readTokenFromCookie = () => (dispatch: any) => {
+  if (typeof document !== "undefined") {
+    const cookieParts = document.cookie.split("; ");
+
+    const tokenCookie = cookieParts.find((row) => row.startsWith("token="));
+
+    const token = tokenCookie ? tokenCookie.split("=")[1] : null;
+
+    if (token) {
+      dispatch(authSlice.actions.setToken(token));
+    }
+  } else {
+    console.log("Document is undefined - running in non-browser environment");
+  }
+};
+
+export const { logout, setToken } = authSlice.actions;
 export default authSlice.reducer;

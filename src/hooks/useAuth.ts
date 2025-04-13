@@ -3,23 +3,19 @@ import { RootState } from "@/redux/store";
 import { useMemo } from "react";
 
 export const useAuth = () => {
-  const { user, token, isAdmin } = useSelector(
+  const { user, token, isAdmin, authChecked } = useSelector(
     (state: RootState) => state.auth
   );
 
-  const storedToken =
-    typeof window !== "undefined"
-      ? localStorage.getItem("token") || sessionStorage.getItem("token")
-      : null;
-
   const isAuthenticated = useMemo(() => {
-    return !!token || !!storedToken;
-  }, [token, storedToken]);
+    return !!token || !!user;
+  }, [token, user]);
 
   return {
     isAuthenticated,
     user,
-    token: token || storedToken,
+    token,
     isAdmin,
+    authChecked,
   };
 };
