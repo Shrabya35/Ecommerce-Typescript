@@ -2,9 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { useAuth } from "@/hooks/useAuth";
 
 import { PulseLoader } from "react-spinners";
@@ -12,29 +9,27 @@ import { PulseLoader } from "react-spinners";
 const UserComponent = () => {
   const router = useRouter();
   const { isAuthenticated, isAdmin } = useAuth();
-  const [redirecting, setRedirecting] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      setRedirecting(true);
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 2000);
-    }
-    if (isAuthenticated) {
-      setRedirecting(true);
-      setTimeout(() => {
-        router.push("/profile/admin");
-      }, 2000);
-    }
-  }, [isAuthenticated, router]);
+    console.log("admin ho?", isAdmin);
+    if (isAuthenticated === undefined) return;
 
-  if (redirecting) {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    } else if (isAuthenticated && isAdmin) {
+      router.push("/profile/admin");
+    } else {
+      setLoading(false);
+    }
+  }, [isAuthenticated, isAdmin, router]);
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="text-center">
           <PulseLoader color="#000" loading={true} size={10} />
-          <p className="mt-4 text-gray-600">Redirecting ...</p>
+          <p className="mt-4 text-gray-600">Checking access...</p>
         </div>
       </div>
     );

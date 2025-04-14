@@ -1,7 +1,11 @@
 "use client";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { readTokenFromCookie, checkAdminAuth } from "@/redux/slices/authSlice";
+import {
+  readTokenFromCookie,
+  checkAdminAuth,
+  fetchUserDetails,
+} from "@/redux/slices/authSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 
 const TokenHandler = () => {
@@ -15,6 +19,7 @@ const TokenHandler = () => {
   useEffect(() => {
     if (token) {
       dispatch(checkAdminAuth());
+      dispatch(fetchUserDetails());
     }
   }, [dispatch, token]);
 

@@ -8,7 +8,7 @@ import { RootState, AppDispatch } from "@/redux/store";
 import { useLoading } from "@/context/loadingContext";
 
 import { ClipLoader } from "react-spinners";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "@/components/icons";
 
 import { login } from "@/redux/slices/authSlice";
 

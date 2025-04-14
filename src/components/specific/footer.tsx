@@ -10,7 +10,7 @@ import {
   FaInstagram,
   FaTiktok,
   FaTwitter,
-} from "react-icons/fa";
+} from "@/components/icons";
 
 const Footer = () => {
   return (

@@ -58,7 +58,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     );
   }
 
-  if (!authChecked || loadingPage) {
+  if (loadingPage) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <PulseLoader color="#000" loading={true} size={10} />

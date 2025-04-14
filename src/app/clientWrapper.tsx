@@ -28,10 +28,13 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
       <Provider store={store}>
         <TokenHandler />
         <GlobalLoader />
-        {!pathname.startsWith("/auth") && <Offer />}
-        {!pathname.startsWith("/auth") && <Navbar />}
+        {!pathname.startsWith("/auth") &&
+          !pathname.startsWith("/profile/admin") && <Offer />}
+        {!pathname.startsWith("/auth") &&
+          !pathname.startsWith("/profile/admin") && <Navbar />}
         {children}
-        {!pathname.startsWith("/auth") && <Footer />}
+        {!pathname.startsWith("/auth") &&
+          !pathname.startsWith("/profile/admin") && <Footer />}
         <ToastContainer />
       </Provider>
     </QueryClientProvider>

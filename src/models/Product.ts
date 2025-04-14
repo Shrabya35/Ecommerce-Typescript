@@ -14,7 +14,6 @@ interface IProduct extends Document {
     data: Buffer;
     contentType: string;
   };
-  shipping?: boolean;
   applyDiscount: () => void;
 }
 
@@ -60,9 +59,6 @@ const productSchema = new Schema<IProduct>(
     image: {
       data: Buffer,
       contentType: String,
-    },
-    shipping: {
-      type: Boolean,
     },
   },
   { timestamps: true }

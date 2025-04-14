@@ -43,26 +43,27 @@ export const checkAdminAuth = createAsyncThunk("auth/checkAdmin", async () => {
   }
 });
 
-export const fetchUserDetails = createAsyncThunk<
-  User,
-  string,
-  { rejectValue: string }
->("auth/fetchUserDetails", async (email, { rejectWithValue }) => {
-  try {
-    const response = await axios.get(`/api/user/user-details/${email}`, {
-      withCredentials: true,
-    });
-    const user = response.data.user;
+export const fetchUserDetails = createAsyncThunk(
+  "auth/fetchUserDetails",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axios.get<{ success: boolean; user: User }>(
+        "/api/auth/user",
+        {
+          withCredentials: true,
+        }
+      );
 
-    return user;
-  } catch (error: any) {
-    const errorMsg =
-      error.response?.data?.message || "Failed to fetch user details";
-    toast.error(errorMsg);
-    return rejectWithValue(errorMsg);
+      if (res.data.success) {
+        return res.data.user;
+      } else {
+        return rejectWithValue("User not authorized");
+      }
+    } catch (error) {
+      return rejectWithValue("Error fetching user");
+    }
   }
-});
-
+);
 export const login = createAsyncThunk(
   "auth/login",
   async ({ credentials }: LoginParams, { rejectWithValue }) => {
@@ -137,9 +138,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(checkAdminAuth.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(
         checkAdminAuth.fulfilled,
         (state, action: PayloadAction<{ isAdmin: boolean }>) => {
@@ -166,7 +164,8 @@ const authSlice = createSlice({
       )
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || null;
+        state.error =
+          typeof action.payload === "string" ? action.payload : null;
         state.user = null;
       })
       .addCase(login.pending, (state) => {
@@ -197,6 +196,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<{ token: string; user: User }>) => {
           state.loading = false;
           state.user = action.payload.user;
+          console.log("user", action.payload.user);
           state.token = action.payload.token;
           state.error = null;
         }

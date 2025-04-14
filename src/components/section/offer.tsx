@@ -19,7 +19,7 @@ const Offer = () => {
   if (!visible) return null;
 
   return (
-    <div className="w-full bg-neutral-900 text-white text-sm py-2 px-4 flex items-center justify-center relative transition-all duration-300 ease-in-out">
+    <div className="w-full bg-neutral-900 text-white text-sm py-2 px-8 flex items-center justify-center text-center relative transition-all duration-300 ease-in-out">
       <span className="opacity-90">{offers[offerIndex]}</span>
       <button
         onClick={() => setVisible(false)}

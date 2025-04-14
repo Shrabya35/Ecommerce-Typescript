@@ -5,17 +5,20 @@ interface ICategory extends Document {
   slug: string;
 }
 
-const categorySchema = new Schema<ICategory>({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
+const categorySchema = new Schema<ICategory>(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
-  slug: {
-    type: String,
-    lowercase: true,
-  },
-});
+  { timestamps: true }
+);
 
 const Category: Model<ICategory> =
   mongoose.models.Category ||

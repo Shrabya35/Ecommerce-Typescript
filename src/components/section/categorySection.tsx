@@ -34,41 +34,39 @@ const CategorySection = () => {
   const getSizeClass = (index: number) => {
     const sizes = [
       "w-20 h-20",
-      "w-25 h-25",
-      "w-30 h-30",
-      "w-35 h-35",
-      "w-35 h-35",
-      "w-30 h-30",
-      "w-25 h-25",
+      "w-25 h-25 shadow-sm",
+      "w-30 h-30 shadow-lg",
+      "w-35 h-35 shadow-xl",
+      "w-35 h-35 shadow-xl",
+      "w-30 h-30 shadow-lg",
+      "w-25 h-25 shadow-sm",
       "w-20 h-20",
     ];
     return sizes[index] || "w-32 h-32";
   };
 
   return (
-    <div className="w-full bg-white py-6 px-4 md:px-6 lg:px-8">
+    <div className="w-full bg-white py-10 px-4 md:px-6 lg:px-8">
       <div className="flex justify-start md:justify-center items-center mb-10">
         <h2 className="text-xl text-gray-800 md:text-2xl font-bold">
           Shop by Category
         </h2>
       </div>
 
-      <div className=" overflow-x-auto no-scrollbar">
-        <div className="flex gap-3 ml-5 items-center justify-center w-max min-w-full md:w-full md:min-w-0 pb-2">
+      <div className="overflow-x-auto no-scrollbar">
+        <div className="flex gap-5 ml-5 items-center justify-center w-max min-w-full md:w-full md:min-w-0 pb-4">
           {categories.map((cat, i) => (
             <Link
               href={`/category/${cat.slug || cat._id}`}
               key={cat._id}
-              className={`flex-shrink-0  transition-all duration-300 ${getSizeClass(
+              className={`flex-shrink-0 transition-all duration-300 ${getSizeClass(
                 i
               )}`}
             >
-              <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900 border-2 border-neutral-700 rounded-lg p-4 overflow-hidden shadow-xl hover:border-pink-500 transition-all">
-                <div className="relative z-10 flex items-center justify-center h-full">
-                  <span className="text-sm font-black uppercase text-center text-gray-200 tracking-tight">
-                    {cat.name}
-                  </span>
-                </div>
+              <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900 border-2 border-neutral-700 rounded-lg p-1 overflow-hidden  hover:border-pink-500 transition-all flex items-center justify-center">
+                <span className="text-xs font-black uppercase text-center text-gray-200 tracking-tight break-words max-w-full">
+                  {cat.name}
+                </span>
               </div>
             </Link>
           ))}

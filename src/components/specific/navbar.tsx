@@ -17,8 +17,10 @@ import {
   IoShirtOutline,
   IoPersonOutline,
   IoArrowForward,
-} from "react-icons/io5";
-import { FaRegHeart, FaUserCircle, FaShoppingBag } from "react-icons/fa";
+  FaRegHeart,
+  FaUserCircle,
+  FaShoppingBag,
+} from "@/components/icons";
 
 import { toast } from "react-toastify";
 import { Logo2 } from "@/assets";
