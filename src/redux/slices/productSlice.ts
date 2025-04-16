@@ -40,6 +40,9 @@ interface FetchProductParams {
   sort?: "latest" | "oldest";
   price?: "low" | "high";
 }
+interface DeleteProductParams {
+  id: string;
+}
 
 interface FetchSingleProductParams {
   slug: string;
@@ -92,12 +95,74 @@ export const fetchSingleProduct = createAsyncThunk(
   "product/fetchSingleProduct",
   async ({ slug }: FetchSingleProductParams) => {
     try {
-      const res = await axios.get(`/api/product/${slug}`, {
+      const res = await axios.get(`/api/product/slug/${slug}`, {
         withCredentials: true,
       });
       return res.data;
     } catch (error: any) {
       return Promise.reject(error.message || "Error fetching product");
+    }
+  }
+);
+export const addProduct = createAsyncThunk(
+  "product/addProduct",
+  async (formData: FormData, { rejectWithValue }) => {
+    try {
+      const res = await axios.post("/api/product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      toast.success(res.data.message);
+      return res.data.product;
+    } catch (error: any) {
+      const errMsg =
+        error.response?.data?.error || error.message || "Error adding product";
+      toast.error(errMsg);
+      return rejectWithValue(errMsg);
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async (
+    { id, formData }: { id: string; formData: FormData },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axios.patch(`/api/product/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      toast.success(res.data.message);
+      return res.data.product;
+    } catch (error: any) {
+      const errMsg =
+        error.response?.data?.error ||
+        error.message ||
+        "Error updating product";
+      toast.error(errMsg);
+      return rejectWithValue(errMsg);
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async ({ id }: DeleteProductParams, { rejectWithValue }) => {
+    try {
+      const res = await axios.delete(`/api/product/${id}`, {
+        withCredentials: true,
+      });
+      toast.success(res.data.message);
+      return id;
+    } catch (error: any) {
+      const errMsg =
+        error.response?.data?.error ||
+        error.message ||
+        "Error deleting category";
+      toast.error(errMsg);
+      return rejectWithValue(errMsg);
     }
   }
 );
@@ -147,6 +212,58 @@ const productSlice = createSlice({
       .addCase(fetchSingleProduct.rejected, (state, action) => {
         state.error = action.error.message || "Failed to fetch product";
         toast.error(state.error);
+        state.loading = false;
+      })
+      .addCase(addProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        addProduct.fulfilled,
+        (state, action: PayloadAction<Product>) => {
+          state.products.unshift(action.payload);
+          state.total += 1;
+          state.loading = false;
+        }
+      )
+      .addCase(addProduct.rejected, (state, action) => {
+        state.error = (action.payload as string) || "Failed to add product";
+        state.loading = false;
+      })
+
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        updateProduct.fulfilled,
+        (state, action: PayloadAction<Product>) => {
+          state.products = state.products.map((p) =>
+            p._id === action.payload._id ? action.payload : p
+          );
+          if (state.singleProduct?._id === action.payload._id) {
+            state.singleProduct = action.payload;
+          }
+          state.loading = false;
+        }
+      )
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.error = (action.payload as string) || "Failed to update product";
+        state.loading = false;
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        deleteProduct.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.products = state.products.filter(
+            (product) => product._id !== action.payload
+          );
+          state.total -= 1;
+          state.loading = false;
+        }
+      )
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.error = (action.payload as string) || "Failed to delete Product";
         state.loading = false;
       });
   },

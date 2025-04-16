@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   MdDashboard,
   MdCategory,
@@ -12,6 +13,8 @@ import {
 } from "@/components/icons";
 import Image from "next/image";
 import { Logo2 } from "@/assets";
+import { logout } from "@/redux/slices/authSlice";
+import { AppDispatch } from "@/redux/store";
 
 type SidebarItem = {
   label: string;
@@ -65,6 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   isMobile,
   setIsSidebarOpen,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const pathname = usePathname();
   const router = useRouter();
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(
@@ -86,6 +90,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/auth/login");
   };
 
   return (
@@ -182,7 +191,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         <div className="p-3 mt-2 border-t border-gray-100">
-          <button className="flex items-center py-2.5 px-3 w-full rounded-lg text-black cursor-pointer hover:bg-gray-300 transition-all duration-200">
+          <button
+            className="flex items-center py-2.5 px-3 w-full rounded-lg text-black cursor-pointer hover:bg-gray-300 transition-all duration-200"
+            onClick={handleLogout}
+          >
             <div className="w-5 flex justify-center">
               <MdLogout size={20} className="text-pink-500" />
             </div>

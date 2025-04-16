@@ -10,7 +10,7 @@ import {
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import { AppDispatch, RootState } from "@/redux/store";
 
 interface Product {
@@ -107,10 +107,12 @@ const ProductsTable = () => {
                       <td className="py-3 px-4">
                         <div className="w-12 h-12 overflow-hidden rounded">
                           {product ? (
-                            <img
+                            <Image
                               src={`/api/product/photo/${product._id}`}
                               className="w-full h-full object-cover"
                               alt={product.name}
+                              width={500}
+                              height={300}
                               loading="lazy"
                             />
                           ) : (

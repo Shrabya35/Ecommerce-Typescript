@@ -14,7 +14,7 @@ import {
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import { Modal, Form, Input, Tooltip } from "antd";
 
 interface Category {

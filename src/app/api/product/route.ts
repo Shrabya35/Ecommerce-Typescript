@@ -2,6 +2,7 @@ import Product from "@/models/Product";
 import Category from "@/models/Category";
 import connectDB from "@/config/connectDB";
 import { NextResponse } from "next/server";
+import slugify from "slugify";
 
 interface SearchParams {
   page: number;
@@ -101,5 +102,103 @@ export async function GET(req: Request) {
       message: "Error in fetching products",
       error: error.message || error,
     });
+  }
+}
+
+export async function POST(req: Request) {
+  await connectDB();
+
+  try {
+    const formData = await req.formData();
+
+    const name = formData.get("name") as string;
+    const type = formData.get("type") as string;
+    const description = formData.get("description") as string;
+    const price = formData.get("price") as string;
+    const category = formData.get("category") as string;
+    const quantity = formData.get("quantity") as string;
+    const shipping = formData.get("shipping") as string;
+    const image = formData.get("image") as File | null;
+
+    switch (true) {
+      case !name:
+        return NextResponse.json(
+          { error: "Name is required" },
+          { status: 400 }
+        );
+      case !type:
+        return NextResponse.json(
+          { error: "Type is required" },
+          { status: 400 }
+        );
+      case !description:
+        return NextResponse.json(
+          { error: "Description is required" },
+          { status: 400 }
+        );
+      case !price:
+        return NextResponse.json(
+          { error: "Price is required" },
+          { status: 400 }
+        );
+      case !category:
+        return NextResponse.json(
+          { error: "Category is required" },
+          { status: 400 }
+        );
+      case !quantity:
+        return NextResponse.json(
+          { error: "Quantity is required" },
+          { status: 400 }
+        );
+      case !image:
+        return NextResponse.json(
+          { error: "Image is required" },
+          { status: 400 }
+        );
+      case image && image.size > 1_000_000:
+        return NextResponse.json(
+          { error: "Image's size should be smaller than 1 MB" },
+          { status: 400 }
+        );
+    }
+
+    const buffer = Buffer.from(await image.arrayBuffer());
+
+    const newProduct = new Product({
+      name,
+      slug: slugify(name),
+      type,
+      description,
+      price,
+      category,
+      quantity,
+      shipping: shipping === "true" || shipping === "1" ? true : false,
+      image: {
+        data: buffer,
+        contentType: image.type,
+      },
+    });
+
+    await newProduct.save();
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Product created successfully",
+        product: newProduct,
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("Error in creating product:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Error in creating product",
+        error: error.message || error,
+      },
+      { status: 500 }
+    );
   }
 }

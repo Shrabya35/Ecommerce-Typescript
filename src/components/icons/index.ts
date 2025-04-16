@@ -37,6 +37,14 @@ import {
   IoArrowForward,
 } from "react-icons/io5";
 
+import {
+  PencilIcon,
+  TrashIcon,
+  PlusIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
+
 export {
   FaEye,
   FaEyeSlash,
@@ -68,4 +76,9 @@ export {
   IoShirtOutline,
   IoPersonOutline,
   IoArrowForward,
+  PencilIcon,
+  TrashIcon,
+  PlusIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 };
