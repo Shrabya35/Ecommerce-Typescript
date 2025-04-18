@@ -43,6 +43,7 @@ import {
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  UploadIcon,
 } from "lucide-react";
 
 export {
@@ -81,4 +82,5 @@ export {
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  UploadIcon,
 };

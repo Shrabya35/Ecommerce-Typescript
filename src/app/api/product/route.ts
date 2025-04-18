@@ -63,7 +63,7 @@ export async function GET(req: Request) {
     filter.discount = { $gt: 0 };
   }
 
-  let sortOption: { [key: string]: any } = {};
+  let sortOption: { [key: string]: any } = { createdAt: -1 };
 
   if (sort === "latest") {
     sortOption = { createdAt: -1 };
@@ -181,6 +181,9 @@ export async function POST(req: Request) {
     });
 
     await newProduct.save();
+    await newProduct.populate("category");
+    const productResponse = newProduct.toObject();
+    delete productResponse.image;
 
     return NextResponse.json(
       {

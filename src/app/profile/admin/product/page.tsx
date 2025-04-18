@@ -1,17 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProduct } from "@/redux/slices/productSlice";
-import Link from "next/link";
+import {
+  fetchProduct,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+} from "@/redux/slices/productSlice";
+import { fetchCategory } from "@/redux/slices/categorySlice";
 import Image from "next/image";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Modal, Form, Input, Select, InputNumber, message } from "antd";
+import { toast } from "react-toastify";
+
 import {
   PencilIcon,
   TrashIcon,
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  UploadIcon,
 } from "@/components/icons";
-import { AppDispatch, RootState } from "@/redux/store";
 
 interface Product {
   _id: string;
@@ -28,7 +37,11 @@ interface Product {
     data: string;
     contentType: string;
   };
-  shipping?: boolean;
+}
+
+interface Category {
+  _id: string;
+  name: string;
 }
 
 const ProductsTable = () => {
@@ -36,11 +49,83 @@ const ProductsTable = () => {
   const { products, loading, total, totalPages, page, limit } = useSelector(
     (state: RootState) => state.product
   );
+  const { categories } = useSelector((state: RootState) => state.category);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(
+    null
+  );
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [form] = Form.useForm();
+
+  const productTypes = ["Men", "Women", "Accessories"];
 
   useEffect(() => {
     dispatch(fetchProduct({ page: currentPage, limit: 10 }));
+    dispatch(fetchCategory({}));
   }, [dispatch, currentPage]);
+
+  const showModal = (product: Product | null = null) => {
+    setEditingProduct(product);
+    setIsModalVisible(true);
+    setImagePreview(null);
+    setImageFile(null);
+
+    setTimeout(() => {
+      if (product) {
+        form.setFieldsValue({
+          name: product.name,
+          type: product.type,
+          description: product.description,
+          price: product.price,
+          discount: product.discount || 0,
+          category:
+            typeof product.category === "string"
+              ? product.category
+              : product.category._id,
+          quantity: product.quantity,
+        });
+      } else {
+        form.resetFields();
+      }
+    }, 0);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setEditingProduct(null);
+    setImagePreview(null);
+    setImageFile(null);
+    form.resetFields();
+  };
+
+  const showDeleteModal = (id: string) => {
+    setDeletingProductId(id);
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalVisible(false);
+    setDeletingProductId(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deletingProductId) {
+      dispatch(deleteProduct({ id: deletingProductId }))
+        .unwrap()
+        .then(() => {
+          setDeleteModalVisible(false);
+          setDeletingProductId(null);
+        })
+        .catch(() => {
+          setDeleteModalVisible(false);
+          setDeletingProductId(null);
+        });
+    }
+  };
 
   const handlePageChange = (newPage: number): void => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -57,18 +142,234 @@ const ProductsTable = () => {
     return category?.name || "Uncategorized";
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1_000_000) {
+        toast.error("Image size should be smaller than 1MB");
+        return;
+      }
+
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = (values: any) => {
+    if (!editingProduct && !imageFile) {
+      message.error("Please upload an image");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("type", values.type);
+    formData.append("description", values.description);
+    formData.append("price", values.price.toString());
+    formData.append("category", values.category);
+    formData.append("quantity", values.quantity.toString());
+
+    if (values.discount) {
+      formData.append("discount", values.discount.toString());
+    }
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    if (editingProduct) {
+      dispatch(updateProduct({ id: editingProduct._id, formData }))
+        .unwrap()
+        .then(() => {
+          handleCancel();
+        })
+        .catch(() => {});
+    } else {
+      dispatch(addProduct(formData))
+        .unwrap()
+        .then(() => {
+          handleCancel();
+        })
+        .catch(() => {});
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-black">Products</h1>
-        <Link
-          href="/admin/products/add"
-          className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded flex items-center"
+        <button
+          className="bg-pink-500 hover:bg-pink-600 text-white cursor-pointer px-4 py-2 rounded flex items-center"
+          onClick={() => showModal()}
         >
           <PlusIcon className="w-5 h-5 mr-1" />
           Add Product
-        </Link>
+        </button>
       </div>
+
+      <Modal
+        title={editingProduct ? "Edit Product" : "Add Product"}
+        open={isModalVisible}
+        onCancel={handleCancel}
+        onOk={() => form.submit()}
+        width={700}
+        destroyOnClose
+      >
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={{
+            type: "Men",
+            discount: 0,
+            quantity: 1,
+          }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Form.Item
+              name="name"
+              label="Product Name"
+              rules={[{ required: true, message: "Please enter product name" }]}
+            >
+              <Input placeholder="e.g. Apple iPhone 13" />
+            </Form.Item>
+
+            <Form.Item
+              name="type"
+              label="Product Type"
+              rules={[
+                { required: true, message: "Please select product type" },
+              ]}
+            >
+              <Select placeholder="Select product type">
+                {productTypes.map((type) => (
+                  <Select.Option key={type} value={type}>
+                    {type}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="price"
+              label="Price ($)"
+              rules={[{ required: true, message: "Please enter price" }]}
+            >
+              <InputNumber
+                min={0}
+                step={0.01}
+                style={{ width: "100%" }}
+                placeholder="0.00"
+              />
+            </Form.Item>
+
+            <Form.Item name="discount" label="Discount (%)">
+              <InputNumber
+                min={0}
+                max={100}
+                style={{ width: "100%" }}
+                placeholder="0"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="category"
+              label="Category"
+              rules={[{ required: true, message: "Please select a category" }]}
+            >
+              <Select placeholder="Select category">
+                {categories &&
+                  categories.map((category: Category) => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="quantity"
+              label="Stock Quantity"
+              rules={[{ required: true, message: "Please enter quantity" }]}
+            >
+              <InputNumber min={0} style={{ width: "100%" }} placeholder="0" />
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please enter description" }]}
+          >
+            <Input.TextArea rows={4} placeholder="Describe your product..." />
+          </Form.Item>
+
+          <Form.Item
+            label="Product Image"
+            rules={[
+              { required: !editingProduct, message: "Please upload an image" },
+            ]}
+          >
+            <div className="flex items-center space-x-4">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
+                <input
+                  type="file"
+                  id="productImage"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="productImage"
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded cursor-pointer flex items-center"
+                >
+                  <UploadIcon className="w-5 h-5 mr-2" />
+                  Upload Image
+                </label>
+                <p className="text-xs text-gray-500 mt-2">Max size: 1MB</p>
+              </div>
+
+              {imagePreview ? (
+                <div className="w-24 h-24 overflow-hidden rounded-lg">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : editingProduct ? (
+                <div className="w-24 h-24 overflow-hidden rounded-lg">
+                  <Image
+                    src={`/api/product/photo/${editingProduct._id}`}
+                    alt={editingProduct.name}
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : null}
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Delete Product"
+        open={deleteModalVisible}
+        onCancel={handleDeleteCancel}
+        onOk={handleDeleteConfirm}
+        okText="Delete"
+        okButtonProps={{ danger: true }}
+      >
+        <p>
+          Are you sure you want to delete this product? This action cannot be
+          undone.
+        </p>
+      </Modal>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
@@ -164,17 +465,15 @@ const ProductsTable = () => {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex space-x-3">
-                          <Link
-                            href={`/admin/products/edit/${product._id}`}
+                          <button
+                            onClick={() => showModal(product)}
                             className="text-blue-600 hover:text-blue-800"
                           >
                             <PencilIcon className="w-5 h-5" />
-                          </Link>
+                          </button>
                           <button
                             className="text-red-600 hover:text-red-800"
-                            onClick={() => {
-                              alert(`Delete product: ${product._id}`);
-                            }}
+                            onClick={() => showDeleteModal(product._id)}
                           >
                             <TrashIcon className="w-5 h-5" />
                           </button>
@@ -230,7 +529,7 @@ const ProductsTable = () => {
                     <span className="font-medium">
                       {Math.min(currentPage * limit, total)}
                     </span>{" "}
-                    of <span className="font-medium">{total}</span> categories
+                    of <span className="font-medium">{total}</span> products
                   </p>
                 </div>
                 <div>

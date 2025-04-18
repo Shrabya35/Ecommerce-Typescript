@@ -45,7 +45,7 @@ const productSchema = new Schema<IProduct>(
     },
     discountedPrice: {
       type: Number,
-      default: null,
+      default: 0,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,

@@ -14,7 +14,7 @@ import {
   PlusIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "@/components/icons";
+} from "lucide-react";
 import { Modal, Form, Input, Tooltip } from "antd";
 
 interface Category {
@@ -101,7 +101,7 @@ const CategoryTable = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-black">Categories</h1>
         <button
-          className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded flex items-center"
+          className="bg-pink-500 hover:bg-pink-600 text-white cursor-pointer px-4 py-2 rounded flex items-center"
           onClick={() => showModal()}
         >
           <PlusIcon className="w-5 h-5 mr-1" />
