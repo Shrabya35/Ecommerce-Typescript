@@ -115,6 +115,7 @@ export async function POST(req: Request) {
     const type = formData.get("type") as string;
     const description = formData.get("description") as string;
     const price = formData.get("price") as string;
+    const discount = formData.get("discount") as string | null;
     const category = formData.get("category") as string;
     const quantity = formData.get("quantity") as string;
     const shipping = formData.get("shipping") as string;
@@ -165,15 +166,27 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await image.arrayBuffer());
 
+    const numericPrice = parseFloat(price);
+    const numericDiscount = discount ? parseFloat(discount) : 0;
+
+    let discountedPrice;
+    if (numericDiscount > 0) {
+      discountedPrice = Math.floor(
+        numericPrice - (numericPrice * numericDiscount) / 100
+      );
+    }
+
     const newProduct = new Product({
       name,
       slug: slugify(name),
       type,
       description,
-      price,
+      price: numericPrice,
+      discount: numericDiscount > 0 ? numericDiscount : undefined,
+      discountedPrice,
       category,
       quantity,
-      shipping: shipping === "true" || shipping === "1" ? true : false,
+      shipping: shipping === "true" || shipping === "1",
       image: {
         data: buffer,
         contentType: image.type,

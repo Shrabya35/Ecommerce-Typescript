@@ -7,7 +7,7 @@ interface ProductParams {
 }
 
 export async function GET(req: Request, { params }: { params: ProductParams }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   await connectDB();
 

@@ -44,6 +44,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   UploadIcon,
+  Heart,
+  Share2,
 } from "lucide-react";
 
 export {
@@ -83,4 +85,6 @@ export {
   ChevronLeftIcon,
   ChevronRightIcon,
   UploadIcon,
+  Heart,
+  Share2,
 };
