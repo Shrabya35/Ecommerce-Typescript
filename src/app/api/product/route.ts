@@ -1,8 +1,9 @@
+import { NextResponse, NextRequest } from "next/server";
+import slugify from "slugify";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
 import connectDB from "@/config/connectDB";
-import { NextResponse } from "next/server";
-import slugify from "slugify";
+import { getUserFromRequest } from "@/lib/auth";
 
 interface SearchParams {
   page: number;
@@ -109,6 +110,15 @@ export async function POST(req: Request) {
   await connectDB();
 
   try {
+    const { isAdmin } = await getUserFromRequest(req as NextRequest);
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Forbidden: Admins only" },
+        { status: 403 }
+      );
+    }
+
     const formData = await req.formData();
 
     const name = formData.get("name") as string;

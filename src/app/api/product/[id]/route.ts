@@ -1,7 +1,8 @@
 import Product from "@/models/Product";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import connectDB from "@/config/connectDB";
 import slugify from "slugify";
+import { getUserFromRequest } from "@/lib/auth";
 
 export async function PATCH(
   req: Request,
@@ -10,15 +11,24 @@ export async function PATCH(
   await connectDB();
 
   try {
+    const { isAdmin } = await getUserFromRequest(req as NextRequest);
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Forbidden: Admins only" },
+        { status: 403 }
+      );
+    }
+
     const formData = await req.formData();
 
     const name = formData.get("name")?.toString();
     const type = formData.get("type")?.toString();
     const description = formData.get("description")?.toString();
     const price = formData.get("price")?.toString();
+    const discount = formData.get("discount")?.toString();
     const category = formData.get("category")?.toString();
     const quantity = formData.get("quantity")?.toString();
-    const shipping = formData.get("shipping")?.toString();
     const image = formData.get("image") as File | null;
 
     switch (true) {
@@ -64,30 +74,31 @@ export async function PATCH(
         );
     }
 
-    let shippingValue;
-    if (shipping === "Not Specified") {
-      shippingValue = undefined;
-    } else {
-      shippingValue = shipping === "true" || shipping === "1";
+    const numericPrice = parseFloat(price!);
+    const numericDiscount = discount ? parseFloat(discount) : 0;
+
+    let discountedPrice;
+    if (numericDiscount > 0) {
+      discountedPrice = Math.floor(
+        numericPrice - (numericPrice * numericDiscount) / 100
+      );
     }
 
     const updateFields: any = {
       name,
-      slug: slugify(name),
+      slug: slugify(name!),
       type,
       description,
-      price,
+      price: numericPrice,
+      discount: numericDiscount > 0 ? numericDiscount : undefined,
+      discountedPrice,
       category,
       quantity,
     };
 
-    if (shippingValue !== undefined) {
-      updateFields.shipping = shippingValue;
-    }
-
     const product = await Product.findByIdAndUpdate(params.id, updateFields, {
       new: true,
-    });
+    }).populate("category");
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -99,6 +110,11 @@ export async function PATCH(
       if (product.image) {
         product.image.data = buffer;
         product.image.contentType = image.type;
+      } else {
+        product.image = {
+          data: buffer,
+          contentType: image.type,
+        };
       }
       await product.save();
     }
@@ -128,6 +144,15 @@ export async function DELETE(
   await connectDB();
 
   try {
+    const { isAdmin } = await getUserFromRequest(req as NextRequest);
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Forbidden: Admins only" },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
 
     const deletedProduct = await Product.findByIdAndDelete(id);

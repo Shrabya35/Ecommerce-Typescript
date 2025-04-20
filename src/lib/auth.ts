@@ -6,22 +6,25 @@ interface JwtPayload {
   role?: number;
 }
 
-export async function getUserFromRequest(
-  req: NextRequest
-): Promise<JwtPayload | null> {
+export async function getUserFromRequest(req: NextRequest): Promise<{
+  user: JwtPayload | null;
+  isAdmin: boolean;
+}> {
   try {
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
       console.log("No token found in cookies");
-      return null;
+      return { user: null, isAdmin: false };
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-    return decoded;
+    const isAdmin = decoded.role === 1;
+
+    return { user: decoded, isAdmin };
   } catch (error) {
     console.error("JWT verification failed:", error);
-    return null;
+    return { user: null, isAdmin: false };
   }
 }

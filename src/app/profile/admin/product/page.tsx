@@ -235,7 +235,7 @@ const ProductsTable = () => {
               label="Product Name"
               rules={[{ required: true, message: "Please enter product name" }]}
             >
-              <Input placeholder="e.g. Apple iPhone 13" />
+              <Input placeholder="e.g Tshirt Pant " />
             </Form.Item>
 
             <Form.Item

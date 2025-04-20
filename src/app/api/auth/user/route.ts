@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/config/connectDB";
 import { verifyToken } from "@/helper/authHelper";
 import User from "@/models/User";
 
 export async function GET(req: NextRequest) {
+  await connectDB();
+
   try {
     const token = req.cookies.get("token");
 
@@ -31,6 +34,7 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: any) {
+    console.log("error in user", error);
     return NextResponse.json(
       { error: "Error in fetching user", details: error.message },
       { status: 500 }
