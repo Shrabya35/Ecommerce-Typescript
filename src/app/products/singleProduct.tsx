@@ -198,7 +198,7 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 mt-8">
+      <div className="flex flex-col gap-6 mt-20">
         <ProductCarousel
           title="Similar Products"
           queryType="category"
