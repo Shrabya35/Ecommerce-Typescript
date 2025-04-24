@@ -3,6 +3,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchSingleProduct } from "@/redux/slices/productSlice";
+import {
+  fetchWishlist,
+  addToWishlist,
+  removeFromWishlist,
+} from "@/redux/slices/wishlistSlice";
 import ProductCarousel from "@/components/section/productCarousel";
 import { Heart, Share2 } from "@/components/icons";
 import { toast } from "react-toastify";
@@ -29,11 +34,47 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
     loading: boolean;
   };
 
+  const { wishlist = [] } = useSelector(
+    (state: RootState) => state.wishlist || { wishlist: [] }
+  );
+
+  const isInWishlist = Boolean(
+    productData &&
+      productData._id &&
+      wishlist &&
+      Array.isArray(wishlist) &&
+      wishlist.some((item: any) => item && item._id === productData._id)
+  );
+
   useEffect(() => {
     if (slug) {
       dispatch(fetchSingleProduct({ slug }));
+      dispatch(fetchWishlist({ page: 1, limit: 100 }));
     }
   }, [dispatch, slug]);
+
+  const toggleWishlist = () => {
+    if (!productData || !productData._id) {
+      toast.error("Product information is not available");
+      return;
+    }
+
+    if (isInWishlist) {
+      dispatch(removeFromWishlist({ productId: productData._id }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchWishlist({ page: 1, limit: 100 }));
+        })
+        .catch((error) => {});
+    } else {
+      dispatch(addToWishlist({ productId: productData._id }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchWishlist({ page: 1, limit: 100 }));
+        })
+        .catch((error) => {});
+    }
+  };
 
   const copyLink = () => {
     const url = window.location.href;
@@ -74,7 +115,7 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16 flex justify-center items-center">
+      <div className="max-w-7xl min-h-screen mx-auto px-4 py-16 flex justify-center items-center">
         <div className="animate-pulse text-lg">Loading product...</div>
       </div>
     );
@@ -104,9 +145,9 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
 
   return (
     <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10 py-10 bg-gray-50">
-      <div className="bg-white  overflow-hidden">
+      <div className="bg-white overflow-hidden">
         <div className="flex flex-col md:flex-row">
-          <div className="md:w-2/5 ">
+          <div className="md:w-2/5">
             <div className="bg-gray-50 rounded-lg w-full h-full flex items-center justify-center p-4">
               <img
                 src={`/api/product/photo/${productData._id}`}
@@ -178,11 +219,21 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="flex-none p-3 rounded-full text-gray-600 border border-gray-500 hover:bg-gray-100 cursor-pointer transition duration-200">
-                <Heart size={20} />
+              <button
+                className={`flex-none p-3 rounded-full cursor-pointer border transition duration-200 ${
+                  isInWishlist
+                    ? "bg-pink-100 text-pink-600 border-pink-300 hover:bg-pink-200"
+                    : "text-gray-600 border-gray-500 hover:bg-gray-100"
+                }`}
+                onClick={toggleWishlist}
+                aria-label={
+                  isInWishlist ? "Remove from wishlist" : "Add to wishlist"
+                }
+              >
+                <Heart size={20} fill={isInWishlist ? "#db2777" : "none"} />
               </button>
 
-              <button className="flex-grow bg-black text-white font-medium py-3 px-6 rounded-full hover:bg-gray-800 transition duration-200">
+              <button className="flex-grow bg-black text-white font-medium py-3 px-6 rounded-full cursor-pointer hover:bg-gray-800 transition duration-200">
                 ADD TO BAG
               </button>
 

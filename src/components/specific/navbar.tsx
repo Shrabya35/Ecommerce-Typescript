@@ -36,11 +36,16 @@ const Navbar = () => {
 
   const { isAuthenticated } = useAuth();
   const { user } = useSelector((state: RootState) => state.auth);
+  const { total: totalWishlist } = useSelector(
+    (state: RootState) => state.wishlist
+  );
+
+  const totalBagItems = user?.shoppingBag?.length || 0;
 
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true); // Ensure the component has mounted before rendering client-side logic
+    setHasMounted(true);
   }, []);
 
   const toggleMenu = () => setMenuOpen(!isMenuOpen);
@@ -121,12 +126,13 @@ const Navbar = () => {
       label: "My Wishlist",
       action: handleWishlist,
       icon: <FaRegHeart className="w-5 h-5" />,
+      badge: totalWishlist,
     },
     {
       label: "My Cart",
       href: "/cart",
       icon: <FaShoppingBag className="w-5 h-5" />,
-      badge: user?.shoppingBag?.length ?? 0,
+      badge: totalBagItems,
     },
   ];
 
@@ -172,11 +178,16 @@ const Navbar = () => {
           </button>
 
           <button
-            className="p-2 rounded-full hover:bg-gray-100 md:flex cursor-pointer hidden"
+            className="p-2 rounded-full hover:bg-gray-100 md:flex cursor-pointer hidden relative"
             onClick={handleWishlist}
             aria-label="Wishlist"
           >
             <FaRegHeart className="w-5 h-5 text-gray-800" />
+            {hasMounted && totalWishlist > 0 && (
+              <span className="absolute -top-1 -right-1 bg-pink-500 text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
+                {totalWishlist}
+              </span>
+            )}
           </button>
 
           <Link
@@ -195,9 +206,9 @@ const Navbar = () => {
             aria-label="Cart"
           >
             <FaShoppingBag className="w-5 h-5 text-gray-800" />
-            {hasMounted && (user?.shoppingBag?.length ?? 0) > 0 && (
-              <span className="absolute -top-1 -right-1 bg-black text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
-                {user?.shoppingBag?.length ?? 0}
+            {hasMounted && totalBagItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-pink-500 text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
+                {totalBagItems}
               </span>
             )}
           </Link>
@@ -364,6 +375,7 @@ const Navbar = () => {
                     {link.icon}
                     <span className="text-base font-medium">{link.label}</span>
                   </div>
+
                   <IoArrowForward className="w-4 h-4 text-gray-500" />
                 </Link>
               ))}
@@ -387,8 +399,8 @@ const Navbar = () => {
                         {link.label}
                       </span>
                     </div>
-                    {typeof window !== "undefined" && link.badge ? (
-                      <span className="bg-black text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
+                    {hasMounted && (link.badge ?? 0) > 0 ? (
+                      <span className="bg-pink-500 text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
                         {link.badge}
                       </span>
                     ) : (
@@ -410,7 +422,13 @@ const Navbar = () => {
                         {link.label}
                       </span>
                     </div>
-                    <IoArrowForward className="w-4 h-4 text-gray-500" />
+                    {hasMounted && (link.badge ?? 0) > 0 ? (
+                      <span className="bg-pink-500 text-white rounded-full text-xs font-bold min-w-[20px] h-[20px] flex items-center justify-center">
+                        {link.badge}
+                      </span>
+                    ) : (
+                      <IoArrowForward className="w-4 h-4 text-gray-500" />
+                    )}
                   </button>
                 )
               )}

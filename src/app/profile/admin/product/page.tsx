@@ -10,7 +10,15 @@ import {
 import { fetchCategory } from "@/redux/slices/categorySlice";
 import Image from "next/image";
 import { AppDispatch, RootState } from "@/redux/store";
-import { Modal, Form, Input, Select, InputNumber, message } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  InputNumber,
+  message,
+  Tooltip,
+} from "antd";
 import { toast } from "react-toastify";
 
 import {
@@ -465,18 +473,22 @@ const ProductsTable = () => {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex space-x-3">
-                          <button
-                            onClick={() => showModal(product)}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            <PencilIcon className="w-5 h-5" />
-                          </button>
-                          <button
-                            className="text-red-600 hover:text-red-800"
-                            onClick={() => showDeleteModal(product._id)}
-                          >
-                            <TrashIcon className="w-5 h-5" />
-                          </button>
+                          <Tooltip title="Edit Product">
+                            <button
+                              onClick={() => showModal(product)}
+                              className="text-blue-600 hover:text-blue-800"
+                            >
+                              <PencilIcon className="w-5 h-5" />
+                            </button>
+                          </Tooltip>
+                          <Tooltip title="Delete Category">
+                            <button
+                              className="text-red-600 hover:text-red-800"
+                              onClick={() => showDeleteModal(product._id)}
+                            >
+                              <TrashIcon className="w-5 h-5" />
+                            </button>
+                          </Tooltip>
                         </div>
                       </td>
                     </tr>

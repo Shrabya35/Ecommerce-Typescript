@@ -1,12 +1,4 @@
 import bcrypt from "bcryptjs";
-import jwt, { JwtPayload } from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
-
-export interface AuthUser extends JwtPayload {
-  _id: string;
-  role: number;
-}
 
 export const hashPassword = async (password: string): Promise<string> => {
   try {
@@ -31,13 +23,3 @@ export const comparePassword = async (
     throw error;
   }
 };
-
-export function verifyToken(token: string): AuthUser | null {
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
-    return decoded;
-  } catch (error) {
-    console.error("Invalid Token:", error);
-    return null;
-  }
-}

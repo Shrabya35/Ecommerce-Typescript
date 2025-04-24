@@ -17,7 +17,6 @@ interface Product {
     data: string;
     contentType: string;
   };
-  shipping?: boolean;
 }
 
 interface ProductState {

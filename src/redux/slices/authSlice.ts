@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { setWishlistItems } from "./wishlistSlice";
 
 interface User {
   _id: string;
@@ -8,10 +9,27 @@ interface User {
   email: string;
   phone: string;
   role: number;
-  wishlist: string[];
+  wishlist: Product[];
   shoppingBag: string[];
   createdAt: string;
   updatedAt: string;
+}
+
+interface Product {
+  _id: string;
+  name: string;
+  slug: string;
+  type: string;
+  description: string;
+  price: number;
+  discount: number;
+  discountedPrice: number | null;
+  category: string;
+  quantity: number;
+  image?: {
+    data: string;
+    contentType: string;
+  };
 }
 
 interface AuthState {
@@ -45,7 +63,7 @@ export const checkAdminAuth = createAsyncThunk("auth/checkAdmin", async () => {
 
 export const fetchUserDetails = createAsyncThunk(
   "auth/fetchUserDetails",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
       const res = await axios.get<{ success: boolean; user: User }>(
         "/api/auth/user",
@@ -55,6 +73,9 @@ export const fetchUserDetails = createAsyncThunk(
       );
 
       if (res.data.success) {
+        if (res.data.user.wishlist && res.data.user.wishlist.length > 0) {
+          dispatch(setWishlistItems(res.data.user.wishlist));
+        }
         return res.data.user;
       } else {
         return rejectWithValue("User not authorized");
@@ -64,15 +85,20 @@ export const fetchUserDetails = createAsyncThunk(
     }
   }
 );
+
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ credentials }: LoginParams, { rejectWithValue }) => {
+  async ({ credentials }: LoginParams, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post("/api/auth/login", credentials, {
         withCredentials: true,
       });
 
       toast.success(response.data.message);
+
+      if (response.data.user && response.data.user.wishlist) {
+        dispatch(setWishlistItems(response.data.user.wishlist));
+      }
 
       return response.data;
     } catch (error: any) {
@@ -196,7 +222,6 @@ const authSlice = createSlice({
         (state, action: PayloadAction<{ token: string; user: User }>) => {
           state.loading = false;
           state.user = action.payload.user;
-          console.log("user", action.payload.user);
           state.token = action.payload.token;
           state.error = null;
         }

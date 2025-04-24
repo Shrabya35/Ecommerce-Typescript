@@ -41,16 +41,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       if (isAuthenticated === undefined) return;
 
       if (!isAuthenticated) {
-        // Redirect non-authenticated users to login
         router.push("/auth/login");
       } else if (isAuthenticated && !isAdmin) {
-        // Redirect authenticated non-admin users away from admin area
-        router.push("/profile/user"); // or wherever non-admin users should go
+        router.push("/profile/user");
       } else {
-        // User is authenticated and is admin - allow access
         setLoading(false);
       }
-    }, 100); // small delay to let auth state settle
+    }, 100);
 
     return () => clearTimeout(timeout);
   }, [isAuthenticated, isAdmin, router]);

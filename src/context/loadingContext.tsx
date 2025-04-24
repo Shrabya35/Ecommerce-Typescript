@@ -19,7 +19,7 @@ export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({
     if (value === false) {
       setTimeout(() => {
         setLoading(false);
-      }, 3000);
+      }, 1000);
     } else {
       setLoading(value);
     }

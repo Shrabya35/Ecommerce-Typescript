@@ -1,3 +1,4 @@
+// models/Product.ts
 import mongoose, { Document, Schema, Model } from "mongoose";
 
 interface IProduct extends Document {
@@ -70,7 +71,8 @@ productSchema.methods.applyDiscount = function () {
   }
 };
 
-const Product: Model<IProduct> =
+// Use this pattern to prevent errors during hot reloading
+const Product =
   mongoose.models.Product || mongoose.model<IProduct>("Product", productSchema);
 
-export default Product;
+export default Product as Model<IProduct>;

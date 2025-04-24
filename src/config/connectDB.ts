@@ -1,5 +1,9 @@
 import mongoose, { Connection } from "mongoose";
 
+import User from "@/models/User";
+import Product from "@/models/Product";
+import Category from "@/models/Category";
+
 const DATABASE_URL = process.env.MONGO_URL as string;
 
 if (!DATABASE_URL) {

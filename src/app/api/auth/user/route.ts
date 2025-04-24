@@ -1,25 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/config/connectDB";
-import { verifyToken } from "@/helper/authHelper";
+import { getUserFromRequest } from "@/lib/auth";
 import User from "@/models/User";
 
 export async function GET(req: NextRequest) {
   await connectDB();
-
   try {
-    const token = req.cookies.get("token");
-
-    if (!token) {
-      return NextResponse.json({ user: null }, { status: 401 });
+    const { user: existingUser } = await getUserFromRequest(req as NextRequest);
+    if (!existingUser) {
+      return NextResponse.json(
+        { message: "Unauthorized access" },
+        { status: 403 }
+      );
     }
-
-    const decoded = verifyToken(token.value);
-
-    if (!decoded) {
-      return NextResponse.json({ user: null }, { status: 401 });
-    }
-
-    const user = await User.findById(decoded._id).select("-password");
+    const user = await User.findById(existingUser._id).select("-password");
 
     if (!user) {
       return NextResponse.json({ user: null }, { status: 404 });
