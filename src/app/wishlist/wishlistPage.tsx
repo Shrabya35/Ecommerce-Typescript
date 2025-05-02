@@ -46,17 +46,6 @@ const WishlistPage = () => {
   );
 
   useEffect(() => {
-    console.log("Current wishlist state:", {
-      wishlist,
-      total,
-      totalPages,
-      page,
-      currentPage,
-      itemCount: wishlist?.length || 0,
-    });
-  }, [wishlist, total, totalPages, page, currentPage]);
-
-  useEffect(() => {
     dispatch(fetchWishlist({ page: currentPage, limit: 10 }));
   }, [dispatch, currentPage]);
 

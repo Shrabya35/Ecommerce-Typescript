@@ -150,6 +150,7 @@ const wishlistSlice = createSlice({
   reducers: {
     setWishlistItems: (state, action: PayloadAction<Product[]>) => {
       state.wishlist = action.payload;
+      state.total = action.payload.length;
       state.loading = false;
       state.error = null;
     },

@@ -14,7 +14,6 @@ export async function getUserFromRequest(req: NextRequest): Promise<{
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
-      console.log("No token found in cookies");
       return { user: null, isAdmin: false };
     }
 
