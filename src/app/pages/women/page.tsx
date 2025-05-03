@@ -2,7 +2,7 @@ import { WomenBanner } from "@/assets";
 import { Metadata } from "next";
 import Hero from "@/components/section/hero";
 import ProductCarousel from "@/components/section/productCarousel";
-import MiniAbout from "@/components/section/miniAbout";
+import FAQs from "@/components/section/FAQs";
 
 export const metadata: Metadata = {
   title: "Women's Wear | LynxLine",
@@ -29,7 +29,7 @@ export default function Home() {
           link2={link2}
         />
         <ProductCarousel title="Women's Wear" queryType="type" query="Women" />
-        <MiniAbout />
+        <FAQs />
       </main>
     </div>
   );

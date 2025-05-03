@@ -3,7 +3,7 @@ import { HomeBanner } from "@/assets";
 import Hero from "@/components/section/hero";
 import CategorySection from "@/components/section/categorySection";
 import ProductCarousel from "@/components/section/productCarousel";
-import MiniAbout from "@/components/section/miniAbout";
+import FAQs from "@/components/section/FAQs";
 
 const link1: { title: string; href: string }[] = [
   { title: "Shop Men", href: "/type/men" },
@@ -14,7 +14,7 @@ const link2: { title: string; href: string }[] = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-300 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <main className="flex flex-col items-center">
         <Hero
           title1="Lynx"
@@ -26,7 +26,7 @@ export default function Home() {
         />
         <ProductCarousel title="On Sale" onSale={true} />
         <CategorySection />
-        <MiniAbout />
+        <FAQs />
       </main>
     </div>
   );

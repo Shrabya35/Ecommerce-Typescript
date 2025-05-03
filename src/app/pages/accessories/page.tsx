@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import Hero from "@/components/section/hero";
 import ProductCarousel from "@/components/section/productCarousel";
-import MiniAbout from "@/components/section/miniAbout";
+import FAQs from "@/components/section/FAQs";
 
 import { AccessoriesBanner } from "@/assets";
 
@@ -35,7 +35,7 @@ export default function Home() {
           queryType="type"
           query="Accessories"
         />
-        <MiniAbout />
+        <FAQs />
       </main>
     </div>
   );
