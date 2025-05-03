@@ -8,6 +8,7 @@ import AccessoriesBanner from "./accessories-hero.png";
 import NoProduct from "./no-filter.svg";
 import NoWishlist from "./no-wishlist.svg";
 
+import AppMockup from "./app_mockup.png";
 import Esewa from "./e_sewa.png";
 import Khalti from "./khalti.png";
 import QrCode from "./qrcode.png";
@@ -21,6 +22,7 @@ export {
   AccessoriesBanner,
   NoProduct,
   NoWishlist,
+  AppMockup,
   Esewa,
   Khalti,
   QrCode,

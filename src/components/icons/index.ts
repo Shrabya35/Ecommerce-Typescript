@@ -13,6 +13,8 @@ import {
   FaInstagram,
   FaTiktok,
   FaTwitter,
+  FaApple,
+  FaGooglePlay,
 } from "react-icons/fa";
 
 import {
@@ -46,6 +48,9 @@ import {
   UploadIcon,
   Heart,
   Share2,
+  Shield,
+  Zap,
+  Tag,
 } from "lucide-react";
 
 export {
@@ -63,6 +68,8 @@ export {
   FaInstagram,
   FaTiktok,
   FaTwitter,
+  FaApple,
+  FaGooglePlay,
   MdMenu,
   MdClose,
   MdNotifications,
@@ -87,4 +94,7 @@ export {
   UploadIcon,
   Heart,
   Share2,
+  Shield,
+  Zap,
+  Tag,
 };

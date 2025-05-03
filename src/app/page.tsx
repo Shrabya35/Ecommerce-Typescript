@@ -2,7 +2,10 @@ import { HomeBanner } from "@/assets";
 
 import Hero from "@/components/section/hero";
 import CategorySection from "@/components/section/categorySection";
+import BrandStatement from "@/components/section/BrandStatement";
 import ProductCarousel from "@/components/section/productCarousel";
+import TestimonialsSection from "@/components/section/Testimonials";
+import AppPromotionalSection from "@/components/section/AppPromotion";
 import FAQs from "@/components/section/FAQs";
 
 const link1: { title: string; href: string }[] = [
@@ -24,8 +27,11 @@ export default function Home() {
           link1={link1}
           link2={link2}
         />
-        <ProductCarousel title="On Sale" onSale={true} />
         <CategorySection />
+        <BrandStatement />
+        <ProductCarousel title="On Sale" onSale={true} />
+        <TestimonialsSection />
+        <AppPromotionalSection />
         <FAQs />
       </main>
     </div>
