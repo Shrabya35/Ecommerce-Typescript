@@ -11,14 +11,16 @@ export const metadata: Metadata = {
   description: "Your affordable accessories store. LynxLine",
 };
 
-const link1: { title: string; href: string }[] = [
-  { title: "Shop Men", href: "/pages/men" },
-];
-const link2: { title: string; href: string }[] = [
-  { title: "Shop Women", href: "/pages/women" },
-];
-
 export default function Home() {
+  const link1: { title: string; href: string }[] = [
+    { title: "Shop Men", href: "/pages/men" },
+  ];
+  const link2: { title: string; href: string }[] = [
+    { title: "Shop Women", href: "/pages/women" },
+  ];
+
+  const images = [{ src: AccessoriesBanner.src }];
+
   return (
     <div className="min-h-screen bg-gray-300 flex flex-col">
       <main className="flex flex-col items-center">
@@ -26,7 +28,7 @@ export default function Home() {
           title1="Accessorize Your "
           title2="Adventure!!"
           description="Unlock the latest drops to elevate your style game and conquer any terrain."
-          ImageSrc={AccessoriesBanner.src}
+          Images={images}
           link1={link1}
           link2={link2}
         />

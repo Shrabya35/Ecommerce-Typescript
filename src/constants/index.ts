@@ -90,3 +90,31 @@ export const testimonials: Testimonial[] = [
     product: "Endurance Cycling Shorts",
   },
 ];
+
+export const faqs = [
+  {
+    question: "What is Lynxline?",
+    answer:
+      "Lynxline is your go-to online store for premium sportswear, stylish accessories, and authentic football jerseys. We blend performance with style to support your active lifestyle.",
+  },
+  {
+    question: "Do you sell original football jerseys?",
+    answer:
+      "Yes! We offer 100% authentic and high-quality football jerseys. Whether you're supporting your favorite club or national team, we've got you covered.",
+  },
+  {
+    question: "How can I place an order?",
+    answer:
+      "Simply browse our products, add your favorites to the cart, and proceed to checkout. We’ve made the process smooth, secure, and mobile-friendly.",
+  },
+  {
+    question: "How often do you update your inventory?",
+    answer:
+      "We regularly update our inventory with new deals and products. We recommend checking back often for unbeatable bargains and to find the latest additions to our collection of premium sportswear and equipment.",
+  },
+  {
+    question: "Need help or have a question?",
+    answer:
+      "Our support team is here for you. Reach us via email (support@lynxline.com) or DM us on Instagram @lynxline.official.",
+  },
+];

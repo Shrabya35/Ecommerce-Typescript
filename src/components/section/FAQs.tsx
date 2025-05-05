@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { faqs } from "@/constants";
 import clsx from "clsx";
 
 const FAQ = () => {
@@ -10,34 +11,6 @@ const FAQ = () => {
   const toggleFaq = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-
-  const faqs = [
-    {
-      question: "What brands do you offer?",
-      answer:
-        "We offer low-priced sportswear from top brands like adidas, Nike, PUMA, Reebok, Lonsdale, and Dunlop. Our selection includes comfortable shorts, breathable shoes, windproof tracksuit jackets, and much more. Our ever-growing range ensures you'll find your favorites at unbeatable prices.",
-    },
-    {
-      question: "How do you offer such competitive prices?",
-      answer:
-        "LynxLine offers original, near-new products and licensed merchandise at unbeatable prices by purchasing remaining stock and discontinued items from top manufacturers. This allows us to pass significant savings directly to you without compromising on quality.",
-    },
-    {
-      question: "What football equipment do you sell?",
-      answer:
-        "Our football shop has everything a fan could want—high-quality balls, boots for all surfaces, goalkeeper gear, and referee essentials. We also offer stylish, breathable, and durable sportswear to ensure you look and feel great, no matter the weather conditions.",
-    },
-    {
-      question: "Do you ship internationally?",
-      answer:
-        "Yes! LynxLine offers worldwide shipping, so you can start saving on your favorite gear no matter where you're located. Check our shipping policy for more details on delivery times and costs for your specific region.",
-    },
-    {
-      question: "How often do you update your inventory?",
-      answer:
-        "We regularly update our inventory with new deals and products. We recommend checking back often for unbeatable bargains and to find the latest additions to our collection of premium sportswear and equipment.",
-    },
-  ];
 
   return (
     <div className="w-full py-20 ">
