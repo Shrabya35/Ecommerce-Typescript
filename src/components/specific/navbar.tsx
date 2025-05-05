@@ -91,7 +91,7 @@ const Navbar = () => {
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      router.push(`/search-page?search=${searchTerm}`);
+      router.push(`/search?q=${searchTerm}`);
       setSearchOpen(false);
       setMenuOpen(false);
       inputRef.current?.blur();

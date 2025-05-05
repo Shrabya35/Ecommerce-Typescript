@@ -5,7 +5,6 @@ type Testimonial = {
   id: number;
   name: string;
   role: string;
-  image: string;
   rating: number;
   content: string;
   product: string;
@@ -43,7 +42,6 @@ export const testimonials: Testimonial[] = [
     id: 1,
     name: "Alex Morgan",
     role: "Professional Runner",
-    image: "/api/placeholder/64/64",
     rating: 5,
     content:
       "LynxLine's compression leggings have been a game-changer for my marathon training. The comfort and support they provide are unmatched by any other brand I've tried.",
@@ -53,7 +51,6 @@ export const testimonials: Testimonial[] = [
     id: 2,
     name: "Jordan Chen",
     role: "Fitness Enthusiast",
-    image: "/api/placeholder/64/64",
     rating: 5,
     content:
       "I've been using the LynxLine training shoes for 6 months now and they still feel as good as day one. Perfect balance of support and flexibility for my HIIT workouts.",
@@ -63,7 +60,6 @@ export const testimonials: Testimonial[] = [
     id: 3,
     name: "Sophia Rodriguez",
     role: "Yoga Instructor",
-    image: "/api/placeholder/64/64",
     rating: 4,
     content:
       "The breathable fabric of LynxLine's yoga set makes it perfect for hot yoga sessions. The material wicks away sweat efficiently while maintaining its shape.",
@@ -73,7 +69,6 @@ export const testimonials: Testimonial[] = [
     id: 4,
     name: "Marcus Johnson",
     role: "Basketball Coach",
-    image: "/api/placeholder/64/64",
     rating: 5,
     content:
       "My team has been exclusively using LynxLine basketballs for the past season. The grip and durability are exceptional, and the players love them.",
@@ -83,7 +78,6 @@ export const testimonials: Testimonial[] = [
     id: 5,
     name: "Emma Wilson",
     role: "Cycling Enthusiast",
-    image: "/api/placeholder/64/64",
     rating: 5,
     content:
       "The cycling shorts from LynxLine offer incredible padding and support for long rides. I recently completed a 100-mile event and felt comfortable throughout.",

@@ -134,7 +134,7 @@ export async function GET(req: Request) {
     if (!existingUser) {
       return NextResponse.json(
         { message: "Unauthorized access" },
-        { status: 403 }
+        { status: 200 }
       );
     }
 
