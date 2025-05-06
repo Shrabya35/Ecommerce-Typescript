@@ -1,8 +1,10 @@
 import {
-  HomeBanner,
-  MenBanner,
-  WomenBanner,
-  AccessoriesBanner,
+  HomeHero1,
+  HomeHero2,
+  HomeHero3,
+  MenHeor1,
+  WomenHero1,
+  AccessoriesHero1,
 } from "@/assets";
 
 import Hero from "@/components/section/hero";
@@ -19,14 +21,13 @@ export default function Home() {
   const link2 = [{ title: "Shop Women", href: "/type/women" }];
 
   const images = [
-    { src: HomeBanner.src },
-    { src: MenBanner.src },
-    { src: WomenBanner.src },
-    { src: AccessoriesBanner.src },
+    { src: HomeHero1.src },
+    { src: HomeHero2.src },
+    { src: HomeHero3.src },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-200 flex flex-col">
       <main className="flex flex-col items-center">
         <Hero
           title1="Lynx"

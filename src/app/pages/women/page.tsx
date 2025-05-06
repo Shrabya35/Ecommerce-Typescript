@@ -1,7 +1,11 @@
-import { WomenBanner } from "@/assets";
 import { Metadata } from "next";
+
+import { WomenHero1, WomenHero2 } from "@/assets";
+
 import Hero from "@/components/section/hero";
 import ProductCarousel from "@/components/section/productCarousel";
+import TestimonialsSection from "@/components/section/Testimonials";
+import AppPromotionalSection from "@/components/section/AppPromotion";
 import FAQs from "@/components/section/FAQs";
 
 export const metadata: Metadata = {
@@ -17,10 +21,10 @@ export default function Home() {
     { title: "Shop Accessories", href: "/pages/accessories" },
   ];
 
-  const images = [{ src: WomenBanner.src }];
+  const images = [{ src: WomenHero1.src }, { src: WomenHero2.src }];
 
   return (
-    <div className="min-h-screen bg-gray-300 flex flex-col">
+    <div className="min-h-screen bg-gray-200 flex flex-col">
       <main className="flex flex-col items-center">
         <Hero
           title1="Embrace Your "
@@ -31,6 +35,8 @@ export default function Home() {
           link2={link2}
         />
         <ProductCarousel title="Women's Wear" queryType="type" query="Women" />
+        <TestimonialsSection />
+        <AppPromotionalSection />
         <FAQs />
       </main>
     </div>

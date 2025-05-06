@@ -159,7 +159,7 @@ const Hero = ({
                         src={image.src}
                         alt={`Product Image ${index + 1}`}
                         fill
-                        className="object-contain object-center"
+                        className="object-contain object-center shadow-lg shadow-gray-300 rounded-lg"
                         priority={index === 0}
                       />
                     </div>

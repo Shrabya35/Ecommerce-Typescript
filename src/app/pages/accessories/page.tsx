@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 
+import { AccessoriesHero1, AccessoriesHero2 } from "@/assets";
+
 import Hero from "@/components/section/hero";
 import ProductCarousel from "@/components/section/productCarousel";
+import TestimonialsSection from "@/components/section/Testimonials";
+import AppPromotionalSection from "@/components/section/AppPromotion";
 import FAQs from "@/components/section/FAQs";
-
-import { AccessoriesBanner } from "@/assets";
 
 export const metadata: Metadata = {
   title: "Accessories | LynxLine",
@@ -19,10 +21,10 @@ export default function Home() {
     { title: "Shop Women", href: "/pages/women" },
   ];
 
-  const images = [{ src: AccessoriesBanner.src }];
+  const images = [{ src: AccessoriesHero1.src }, { src: AccessoriesHero2.src }];
 
   return (
-    <div className="min-h-screen bg-gray-300 flex flex-col">
+    <div className="min-h-screen bg-gray-200 flex flex-col">
       <main className="flex flex-col items-center">
         <Hero
           title1="Accessorize Your "
@@ -37,6 +39,8 @@ export default function Home() {
           queryType="type"
           query="Accessories"
         />
+        <TestimonialsSection />
+        <AppPromotionalSection />
         <FAQs />
       </main>
     </div>
