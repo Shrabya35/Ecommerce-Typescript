@@ -20,6 +20,16 @@ export const offers: string[] = [
   "📸 Tag us @LynxLine to get featured & win prizes! 🎥",
 ];
 
+export const popularSearches: string[] = [
+  "Fresh Fits",
+  "Football Jerseys",
+  "Hoodies",
+  "Gym Bro",
+  "Accessories",
+  "Jackets",
+  "Leggings",
+];
+
 export const paymentOptions: { image: StaticImageData; label: string }[] = [
   { image: Esewa, label: "Esewa" },
   { image: Khalti, label: "Khalti" },

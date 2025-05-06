@@ -32,7 +32,7 @@ const SearchPage = () => {
   const query = searchParams.get("q") || "";
 
   const [page, setPage] = useState(1);
-  const limit = 9;
+  const limit = 15;
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["searchProducts", query, page, limit],

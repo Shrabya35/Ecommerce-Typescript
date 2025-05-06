@@ -1,4 +1,3 @@
-// models/Product.ts
 import mongoose, { Document, Schema, Model } from "mongoose";
 
 interface IProduct extends Document {
@@ -71,7 +70,6 @@ productSchema.methods.applyDiscount = function () {
   }
 };
 
-// Use this pattern to prevent errors during hot reloading
 const Product =
   mongoose.models.Product || mongoose.model<IProduct>("Product", productSchema);
 

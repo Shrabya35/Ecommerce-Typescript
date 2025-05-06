@@ -51,6 +51,7 @@ import {
   Shield,
   Zap,
   Tag,
+  TrendingUp,
 } from "lucide-react";
 
 export {
@@ -97,4 +98,5 @@ export {
   Shield,
   Zap,
   Tag,
+  TrendingUp,
 };

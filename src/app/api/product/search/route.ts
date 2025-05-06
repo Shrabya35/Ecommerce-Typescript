@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/config/connectDB";
 import Product from "@/models/Product";
+import Category from "@/models/Category";
 
 interface SearchParams {
   page: number;
@@ -23,20 +24,31 @@ export async function GET(req: Request) {
   const { page, limit, query } = params;
   const skip = (page - 1) * limit;
 
-  // Build search regex
-  const tokens = query.split(" ").filter(Boolean);
-  const searchRegex = tokens.map((token) => new RegExp(`\\b${token}\\b`, "i"));
-
-  const searchQuery = query
-    ? {
-        $or: [
-          { $or: searchRegex.map((r) => ({ name: { $regex: r } })) },
-          { $or: searchRegex.map((r) => ({ type: { $regex: r } })) },
-        ],
-      }
-    : {};
-
   try {
+    let searchQuery = {};
+
+    if (query) {
+      const tokens = query.split(" ").filter(Boolean);
+      const searchRegex = tokens.map(
+        (token) => new RegExp(`\\b${token}\\b`, "i")
+      );
+
+      const matchingCategories = await Category.find({
+        name: { $regex: new RegExp(tokens.join("|"), "i") },
+      }).select("_id");
+
+      const categoryIds = matchingCategories.map((cat) => cat._id);
+
+      searchQuery = {
+        $or: [
+          { category: { $in: categoryIds } },
+          { name: { $regex: new RegExp(tokens.join("|"), "i") } },
+          { type: { $regex: new RegExp(tokens.join("|"), "i") } },
+          { desciption: { $regex: new RegExp(tokens.join("|"), "i") } },
+        ],
+      };
+    }
+
     const [products, total] = await Promise.all([
       Product.find(searchQuery)
         .skip(skip)

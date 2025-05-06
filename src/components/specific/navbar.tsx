@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAuth } from "@/hooks/useAuth";
+import { popularSearches } from "@/constants";
 
 import {
   IoMenuOutline,
@@ -20,6 +21,7 @@ import {
   FaRegHeart,
   FaUserCircle,
   FaShoppingBag,
+  TrendingUp,
 } from "@/components/icons";
 
 import { toast } from "react-toastify";
@@ -261,23 +263,24 @@ const Navbar = () => {
           </form>
 
           <div className="mt-6">
-            <p className="text-sm font-medium text-gray-500 mb-3">
-              Popular Searches
-            </p>
+            <div className="flex gap-2 items-center mb-3">
+              <TrendingUp className="w-5 font-bold" />
+              <p className="text-sm font-medium text-gray-700 ">
+                Popular Searches
+              </p>
+            </div>
             <div className="flex flex-wrap gap-2">
-              {["Fresh Fits", "Dresses", "Sneakers", "Summer", "Sale"].map(
-                (term) => (
-                  <button
-                    key={term}
-                    onClick={() => {
-                      setSearchTerm(term);
-                    }}
-                    className="px-3 py-1 cursor-pointer bg-gray-100 rounded-full text-sm text-gray-700 hover:bg-gray-200"
-                  >
-                    {term}
-                  </button>
-                )
-              )}
+              {popularSearches.map((term) => (
+                <button
+                  key={term}
+                  onClick={() => {
+                    setSearchTerm(term);
+                  }}
+                  className="px-3 py-1 cursor-pointer bg-gray-100 rounded-full text-sm text-gray-700 hover:bg-gray-200"
+                >
+                  {term}
+                </button>
+              ))}
             </div>
           </div>
         </div>
