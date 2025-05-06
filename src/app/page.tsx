@@ -6,6 +6,7 @@ import {
 } from "@/assets";
 
 import Hero from "@/components/section/hero";
+import QuickValue from "@/components/section/QuickValue";
 import CategorySection from "@/components/section/categorySection";
 import BrandStatement from "@/components/section/BrandStatement";
 import ProductCarousel from "@/components/section/productCarousel";
@@ -35,6 +36,7 @@ export default function Home() {
           link1={link1}
           link2={link2}
         />
+        <QuickValue />
         <CategorySection />
         <BrandStatement />
         <ProductCarousel title="On Sale" onSale={true} />
