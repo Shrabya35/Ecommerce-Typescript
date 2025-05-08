@@ -13,6 +13,10 @@ import AccessoriesHero2 from "./accessories2-hero.png";
 import NoProduct from "./no-filter.svg";
 import NoWishlist from "./no-wishlist.svg";
 
+import About1 from "./about1.png";
+import About2 from "./about2.png";
+import About3 from "./about3.png";
+
 import AppMockup from "./app_mockup.png";
 import Esewa from "./e_sewa.png";
 import Khalti from "./khalti.png";
@@ -32,6 +36,9 @@ export {
   AccessoriesHero2,
   NoProduct,
   NoWishlist,
+  About1,
+  About2,
+  About3,
   AppMockup,
   Esewa,
   Khalti,

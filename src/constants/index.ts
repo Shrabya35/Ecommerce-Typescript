@@ -30,6 +30,34 @@ export const popularSearches: string[] = [
   "Leggings",
 ];
 
+export const footerLinks = [
+  {
+    title: "LynxLine",
+    links: [
+      { label: "About LynxLine", href: "/article/about-us" },
+      { label: "Contact Us", href: "/article/contact-us" },
+      { label: "Privacy Policy", href: "/article/privacy-policy" },
+      { label: "Return Policy", href: "/article/return-policy" },
+    ],
+  },
+  {
+    title: "Shop",
+    links: [
+      { label: "Men's Collection", href: "/pages/men" },
+      { label: "Women's Collection", href: "/pages/women" },
+      { label: "Accessories", href: "/pages/accessories" },
+    ],
+  },
+  {
+    title: "Help & Support",
+    links: [
+      { label: "Order Guide", href: "/article/order-guide" },
+      { label: "Reset Password", href: "/auth/reset-password" },
+      { label: "Forgot Password", href: "/auth/forgot-password" },
+    ],
+  },
+];
+
 export const paymentOptions: { image: StaticImageData; label: string }[] = [
   { image: Esewa, label: "Esewa" },
   { image: Khalti, label: "Khalti" },

@@ -57,7 +57,7 @@ const CategorySection = () => {
         <div className="flex gap-5 ml-5 items-center justify-center w-max min-w-full md:w-full md:min-w-0 pb-4">
           {categories.map((cat, i) => (
             <Link
-              href={`/category/${cat.slug || cat._id}`}
+              href={`/products?category=${cat.name || cat._id}`}
               key={cat._id}
               className={`flex-shrink-0 transition-all duration-300 ${getSizeClass(
                 i
