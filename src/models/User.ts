@@ -7,7 +7,10 @@ interface IUser extends Document {
   phone: string;
   role: number;
   wishlist: mongoose.Types.ObjectId[];
-  shoppingBag: mongoose.Types.ObjectId[];
+  shoppingBag: {
+    product: mongoose.Types.ObjectId;
+    quantity: number;
+  }[];
 }
 
 const userSchema = new Schema<IUser>(
@@ -42,8 +45,17 @@ const userSchema = new Schema<IUser>(
     ],
     shoppingBag: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        _id: false,
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+          min: 1,
+        },
       },
     ],
   },
