@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
 import { useLoading } from "@/context/loadingContext";
@@ -40,6 +41,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
   similarProduct,
   className = "",
 }) => {
+  const router = useRouter();
   const sliderRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -129,6 +131,31 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
     }
   };
 
+  const handleViewAll = () => {
+    const params = new URLSearchParams();
+
+    if (queryType === "category" && query) {
+      params.set("category", query);
+    } else if (queryType === "type" && query) {
+      params.set("type", query);
+    }
+
+    if (onSale !== undefined) {
+      params.set("onSale", String(onSale));
+    }
+
+    if (sort) {
+      params.set("sort", sort);
+    }
+
+    if (price) {
+      params.set("price", price);
+    }
+
+    const queryString = params.toString();
+    router.push(`/products${queryString ? `?${queryString}` : ""}`);
+  };
+
   const containerClasses = `w-full bg-white py-10 max-w-full px-4 md:px-6 lg:px-8 ${className}`;
 
   if (error)
@@ -164,7 +191,10 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
     <div className={containerClasses}>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl text-gray-800 md:text-2xl font-bold">{title}</h2>
-        <button className="hover:underline text-gray-800 cursor-pointer font-medium text-sm md:text-base transition-colors">
+        <button
+          className="hover:underline text-gray-800 cursor-pointer font-medium text-sm md:text-base transition-colors"
+          onClick={handleViewAll}
+        >
           View All
         </button>
       </div>

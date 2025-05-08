@@ -1,11 +1,4 @@
-import {
-  HomeHero1,
-  HomeHero2,
-  HomeHero3,
-  MenHeor1,
-  WomenHero1,
-  AccessoriesHero1,
-} from "@/assets";
+import { HomeHero1, HomeHero2, HomeHero3 } from "@/assets";
 
 import Hero from "@/components/section/hero";
 import QuickValue from "@/components/section/QuickValue";
