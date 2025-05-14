@@ -38,7 +38,7 @@ const QuickValue = () => {
   const highlights = [
     {
       title: "Fast Shipping",
-      description: "Free delivery on orders over $75",
+      description: "Free delivery on orders over ₹ 999",
       icon: <FaTruck className="w-8 h-8" />,
     },
     {

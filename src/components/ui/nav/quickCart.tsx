@@ -10,6 +10,7 @@ import { NoProduct, NoAuth } from "@/assets";
 import { IoCloseOutline, FaShoppingBag } from "@/components/icons";
 import { useAuth } from "@/hooks/useAuth";
 import { ClipLoader } from "react-spinners";
+import { formatNumberNPR } from "@/utils/formatNumberNpr";
 
 interface QuickCartProps {
   isCartOpen: boolean;
@@ -150,16 +151,20 @@ const QuickCart: React.FC<QuickCartProps> = ({ isCartOpen, closeCart }) => {
                 {item.product.name}
               </h3>
 
-              <div className="flex gap-3 items-center">
-                <p className="text-base sm:text-lg font-bold text-gray-900">
-                  ${item.product.price ?? item.product.discountedPrice}
-                </p>
-                {item.product.discount > 0 && (
-                  <p className="text-sm line-through text-gray-500">
-                    ${item.product.price}
-                  </p>
-                )}
-              </div>
+              {item.product.discount > 0 ? (
+                <div className="flex items-center gap-1">
+                  <span className="text-pink-500 font-medium">
+                    ₹ {formatNumberNPR(item.product.discountedPrice)}
+                  </span>
+                  <span className="text-sm text-gray-400 line-through ml-2">
+                    ₹ {formatNumberNPR(item.product.price)}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-black">
+                  ₹ {formatNumberNPR(item.product.price)}
+                </span>
+              )}
               <p className="text-sm font-bold text-gray-700">
                 Qty: {item.quantity}
               </p>

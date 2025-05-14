@@ -20,6 +20,7 @@ import {
   FaPlus,
   FaMinus,
 } from "@/components/icons";
+import { formatNumberNPR } from "@/utils/formatNumberNpr";
 
 interface Product {
   _id: string;
@@ -339,15 +340,15 @@ const ShoppingBagPage = () => {
                     {item.product.discount > 0 ? (
                       <div className="flex items-center gap-1.5">
                         <span className="text-pink-500 font-medium">
-                          ${item.product.discountedPrice}
+                          ₹ {formatNumberNPR(item.product.discountedPrice)}
                         </span>
                         <span className="text-xs text-gray-400 line-through">
-                          ${item.product.price}
+                          ₹ {formatNumberNPR(item.product.price)}
                         </span>
                       </div>
                     ) : (
                       <span className="text-gray-800">
-                        ${item.product.price}
+                        ₹ {formatNumberNPR(item.product.price)}
                       </span>
                     )}
                   </td>
@@ -544,15 +545,15 @@ const ShoppingBagPage = () => {
             </h3>
             <div className="flex items-center justify-between w-full">
               <p>Subtotal ({total} items):</p>
-              <p>${subtotal}</p>
+              <p>₹ {formatNumberNPR(subtotal)}</p>
             </div>
             <div className="flex items-center justify-between w-full">
               <p>Estimated Shipping:</p>
-              <p>${estimatedShipping}</p>
+              <p>₹ {formatNumberNPR(estimatedShipping)}</p>
             </div>
             <div className="flex items-center justify-between w-full">
               <p>Total:</p>
-              <p>${totalPrice}</p>
+              <p>₹ {formatNumberNPR(totalPrice)}</p>
             </div>
             <button className="mt-2 bg-black text-white py-2 cursor-pointer rounded-md hover:bg-gray-600">
               Proceed to Checkout

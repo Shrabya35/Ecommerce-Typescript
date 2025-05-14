@@ -22,6 +22,7 @@ import {
 } from "@/components/icons";
 import { NoWishlist } from "@/assets";
 import { toast } from "react-toastify";
+import { formatNumberNPR } from "@/utils/formatNumberNpr";
 
 interface Product {
   _id: string;
@@ -177,14 +178,16 @@ const WishlistPage = () => {
           {product.discount > 0 ? (
             <div>
               <span className="text-pink-500 font-medium">
-                ${product.discountedPrice}
+                ₹ {formatNumberNPR(product.discountedPrice)}
               </span>
               <span className="text-sm text-gray-400 line-through ml-2">
-                ${product.price}
+                ₹ {formatNumberNPR(product.price)}
               </span>
             </div>
           ) : (
-            <span className="text-black">${product.price}</span>
+            <span className="text-black">
+              ₹ {formatNumberNPR(product.price)}
+            </span>
           )}
         </td>
         <td

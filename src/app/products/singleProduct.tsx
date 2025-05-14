@@ -14,6 +14,7 @@ import {
   updateBagQuantity,
 } from "@/redux/slices/shoppingBagSlice";
 import ProductCarousel from "@/components/section/productCarousel";
+import { formatNumberNPR } from "@/utils/formatNumberNpr";
 import { Heart, Share2, FaShoppingBag } from "@/components/icons";
 import { toast } from "react-toastify";
 
@@ -216,10 +217,10 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
               {productData.discount && productData.discount > 0 ? (
                 <div className="flex items-center gap-2">
                   <p className="text-2xl font-bold text-gray-900">
-                    ${productData.discountedPrice}
+                    ₹ {formatNumberNPR(productData.discountedPrice)}
                   </p>
                   <p className="text-sm text-red-500 line-through">
-                    ${productData.price}
+                    ₹ {formatNumberNPR(productData.price)}
                   </p>
                   <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">
                     {productData.discount}% OFF
@@ -227,7 +228,7 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
                 </div>
               ) : (
                 <p className="text-2xl font-bold text-gray-900">
-                  ${productData.price}
+                  ₹ {formatNumberNPR(productData.price)}
                 </p>
               )}
             </div>

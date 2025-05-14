@@ -20,6 +20,7 @@ import {
   Tooltip,
 } from "antd";
 import { toast } from "react-toastify";
+import { formatNumberNPR } from "@/utils/formatNumberNpr";
 
 import {
   PencilIcon,
@@ -264,7 +265,7 @@ const ProductsTable = () => {
 
             <Form.Item
               name="price"
-              label="Price ($)"
+              label="Price (₹)"
               rules={[{ required: true, message: "Please enter price" }]}
             >
               <InputNumber
@@ -448,14 +449,16 @@ const ProductsTable = () => {
                         {product.discount > 0 ? (
                           <div>
                             <span className="text-pink-500 font-medium">
-                              ${product.discountedPrice}
+                              ₹{formatNumberNPR(product.discountedPrice)}
                             </span>
                             <span className="text-sm text-gray-400 line-through ml-2">
-                              ${product.price}
+                              ₹ {formatNumberNPR(product.price)}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-black">${product.price}</span>
+                          <span className="text-black">
+                            ₹ {formatNumberNPR(product.price)}
+                          </span>
                         )}
                       </td>
                       <td className="py-3 px-4">

@@ -11,10 +11,10 @@ type Testimonial = {
 };
 
 export const offers: string[] = [
-  "🎉 Shop over $200 & enjoy FREE delivery🚚💰",
+  "🎉 Shop over ₹ 999 & enjoy FREE delivery🚚💰",
   "🌟 Discover our exclusive deals & discounts this month! 💸✨",
   "💳 Get 20% off on your purchase with code BlackNigga! 💳🛍️",
-  "🎁 Get a FREE mystery gift on orders over $50! 🎉",
+  "🎁 Get a FREE mystery gift on orders over ₹ 200! 🎉",
   "💳 Save 15% when you pay with Khalti or Esewa! 💰",
   "👀 Get early access to drops when you subscribe! 🔓",
   "📸 Tag us @LynxLine to get featured & win prizes! 🎥",

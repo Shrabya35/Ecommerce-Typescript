@@ -1,5 +1,6 @@
 "use client";
 
+import { formatNumberNPR } from "@/utils/formatNumberNpr";
 import Link from "next/link";
 import React from "react";
 
@@ -67,15 +68,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {discountedPrice ? (
                   <div className="flex gap-2 items-center">
                     <p className="text-xs text-pink-500 line-through">
-                      ${product.price}
+                      ₹ {formatNumberNPR(product.price)}
                     </p>
                     <p className="text-base font-bold text-gray-900">
-                      ${discountedPrice}
+                      ₹ formatNumberNPR(Number(discountedPrice))
                     </p>
                   </div>
                 ) : (
                   <p className="text-base font-bold text-gray-900">
-                    ${product.price}
+                    ₹ {formatNumberNPR(product.price)}
                   </p>
                 )}
               </div>
