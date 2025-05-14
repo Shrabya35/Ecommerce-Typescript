@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import { NoProduct } from "@/assets";
 import { ClipLoader } from "react-spinners";
+import ProductCard from "@/components/ui/cards/ProductCard";
 
 interface Product {
   _id: string;
@@ -161,69 +161,7 @@ const ViewAllPage = () => {
         <>
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product: Product) => {
-              const shortDescription = product.description
-                ? truncateDescription(product.description)
-                : "";
-
-              return (
-                <Link
-                  href={`/products/${product.slug}`}
-                  key={product._id}
-                  className="group"
-                >
-                  <div className="product-card flex-shrink-0 w-40 sm:w-80 h-70 sm:h-90 border border-gray-200 rounded-xl overflow-hidden shadow-sm group-hover:shadow-lg transition-all duration-300 bg-white flex flex-col">
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <img
-                        src={`/api/product/photo/${product._id}`}
-                        className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        alt={product.name}
-                        loading="lazy"
-                      />
-                      {product.discount && product.discount > 0 && (
-                        <div className="absolute top-3 left-3 bg-pink-500 text-white text-xs font-bold px-2 py-1 rounded">
-                          {product.discount}% OFF
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col p-5 flex-grow">
-                      <div className="flex-grow flex flex-col">
-                        <h3 className="text-lg text-gray-800 font-semibold line-clamp-1 mb-2">
-                          {product.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                          {shortDescription}
-                        </p>
-                      </div>
-                      <div className="mt-auto">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            {product.discount ? (
-                              <div className="flex gap-2 items-center">
-                                <p className="text-xs text-pink-500 line-through">
-                                  ${product.price}
-                                </p>
-                                <p className="text-base font-bold text-gray-900">
-                                  ${product.discountedPrice}
-                                </p>
-                              </div>
-                            ) : (
-                              <p className="text-base font-bold text-gray-900">
-                                ${product.price}
-                              </p>
-                            )}
-                          </div>
-                          <span className="text-xs font-medium text-gray-500 px-2 py-1 bg-gray-100 rounded-full truncate max-w-28">
-                            {typeof product.category === "object" &&
-                            product.category?.name
-                              ? product.category.name
-                              : product.type}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
+              return <ProductCard key={product._id} product={product} />;
             })}
           </div>
 

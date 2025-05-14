@@ -11,7 +11,7 @@ type Testimonial = {
 };
 
 export const offers: string[] = [
-  "🎉 Shop over $75 & enjoy FREE delivery🚚💰",
+  "🎉 Shop over $200 & enjoy FREE delivery🚚💰",
   "🌟 Discover our exclusive deals & discounts this month! 💸✨",
   "💳 Get 20% off on your purchase with code BlackNigga! 💳🛍️",
   "🎁 Get a FREE mystery gift on orders over $50! 🎉",

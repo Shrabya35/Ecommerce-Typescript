@@ -15,6 +15,8 @@ import {
   FaTwitter,
   FaApple,
   FaGooglePlay,
+  FaPlus,
+  FaMinus,
 } from "react-icons/fa";
 
 import {
@@ -71,6 +73,8 @@ export {
   FaTwitter,
   FaApple,
   FaGooglePlay,
+  FaPlus,
+  FaMinus,
   MdMenu,
   MdClose,
   MdNotifications,

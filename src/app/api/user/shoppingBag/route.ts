@@ -5,9 +5,6 @@ import Product from "@/models/Product";
 import { getUserFromRequest } from "@/lib/auth";
 import connectDB from "@/config/connectDB";
 
-interface bagParams {
-  productId: string;
-}
 interface SearchParams {
   page: number;
   limit: number;
@@ -41,7 +38,6 @@ export async function POST(req: Request) {
     }
 
     if (!mongoose.models.Product) {
-      console.log("Product model is not registered, registering now");
       require("@/models/Product");
     }
 
@@ -162,11 +158,6 @@ export async function PUT(req: Request) {
     }
 
     await user.save();
-    console.log(
-      "Shopping bag after removal:",
-      user.shoppingBag.length,
-      "items"
-    );
 
     const updatedUser = await User.findById(existingUser._id).populate({
       path: "shoppingBag.product",
@@ -217,9 +208,19 @@ export async function GET(req: Request) {
       require("@/models/Product");
     }
 
+    if (!mongoose.models.Category) {
+      require("@/models/Category");
+    }
+
     const populatedUser = await User.findById(existingUser._id).populate({
       path: "shoppingBag.product",
       model: "Product",
+      select: "-image",
+      populate: {
+        path: "category",
+        model: "Category",
+        select: "name",
+      },
     });
 
     if (!populatedUser) {
@@ -228,6 +229,8 @@ export async function GET(req: Request) {
 
     const fullShoppingBag = populatedUser.shoppingBag || [];
     const totalShoppingBag = fullShoppingBag.length;
+
+    const totals = await populatedUser.calculateCartTotals();
 
     const sortedShoppingBag = [...fullShoppingBag].sort((a, b) => {
       if (a.product && b.product) {
@@ -245,6 +248,9 @@ export async function GET(req: Request) {
       {
         message: "Shopping bag fetched successfully",
         shoppingBag: paginatedShoppingBag,
+        subtotal: totals.subtotal,
+        estimatedShipping: totals.estimatedShipping,
+        totalPrice: totals.total,
         total: totalShoppingBag,
         page,
         limit,
@@ -304,7 +310,7 @@ export async function PATCH(req: NextRequest) {
       if (currentQty >= product.quantity) {
         return NextResponse.json(
           { message: "Maximum available stock reached" },
-          { status: 400 }
+          { status: 200 }
         );
       }
       shoppingItem.quantity += 1;
@@ -312,7 +318,7 @@ export async function PATCH(req: NextRequest) {
       if (currentQty <= 1) {
         return NextResponse.json(
           { message: "Minimum quantity is 1" },
-          { status: 400 }
+          { status: 200 }
         );
       }
       shoppingItem.quantity -= 1;

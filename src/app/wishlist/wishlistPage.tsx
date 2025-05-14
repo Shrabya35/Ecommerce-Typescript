@@ -6,6 +6,11 @@ import {
   fetchWishlist,
   removeFromWishlist,
 } from "@/redux/slices/wishlistSlice";
+import {
+  fetchBag,
+  addToBag,
+  updateBagQuantity,
+} from "@/redux/slices/shoppingBagSlice";
 import Image from "next/image";
 import { AppDispatch, RootState } from "@/redux/store";
 import { Modal, Tooltip, message } from "antd";
@@ -16,6 +21,7 @@ import {
   ChevronRightIcon,
 } from "@/components/icons";
 import { NoWishlist } from "@/assets";
+import { toast } from "react-toastify";
 
 interface Product {
   _id: string;
@@ -39,6 +45,9 @@ const WishlistPage = () => {
   const { wishlist, loading, total, totalPages, page, limit } = useSelector(
     (state: RootState) => state.wishlist
   );
+  const { bag = [] } = useSelector(
+    (state: RootState) => state.shoppingBag || { bag: [] }
+  );
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(
@@ -52,6 +61,36 @@ const WishlistPage = () => {
   const showDeleteModal = (id: string) => {
     setDeletingProductId(id);
     setDeleteModalVisible(true);
+  };
+
+  const toggleBag = (productData: Product) => {
+    const isInBag = Boolean(
+      productData &&
+        productData._id &&
+        bag &&
+        Array.isArray(bag) &&
+        bag.some((item: any) => item && item.product._id === productData._id)
+    );
+
+    if (!productData || !productData._id) {
+      toast.error("Product information is not available");
+      return;
+    }
+    if (isInBag) {
+      dispatch(updateBagQuantity({ productId: productData._id, action: 1 }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchBag({ page: 1, limit: 100 }));
+        })
+        .catch((error) => {});
+    } else {
+      dispatch(addToBag({ productId: productData._id }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchBag({ page: 1, limit: 100 }));
+        })
+        .catch((error) => {});
+    }
   };
 
   const handleDeleteCancel = () => {
@@ -79,10 +118,6 @@ const WishlistPage = () => {
           setDeletingProductId(null);
         });
     }
-  };
-
-  const handleAddToBag = (productId: string) => {
-    message.success("Product added to bag");
   };
 
   const handlePageChange = (newPage: number): void => {
@@ -176,7 +211,7 @@ const WishlistPage = () => {
           <div className="flex space-x-3">
             <Tooltip title="Remove From Wishlist">
               <button
-                className="text-red-600 hover:text-red-800"
+                className="text-red-600 hover:text-red-800 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   showDeleteModal(product._id);
@@ -187,10 +222,10 @@ const WishlistPage = () => {
             </Tooltip>
             <Tooltip title="Add to Bag">
               <button
-                className="text-black hover:text-gray-700"
+                className="text-black hover:text-gray-700 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleAddToBag(product._id);
+                  toggleBag(product);
                 }}
               >
                 <FaShoppingBag className="w-5 h-5" />

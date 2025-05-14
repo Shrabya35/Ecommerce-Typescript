@@ -13,6 +13,13 @@ export async function GET(req: Request, context: { params: ProductParams }) {
   await connectDB();
 
   try {
+    if (!pid || pid === "undefined") {
+      return NextResponse.json(
+        { error: "Invalid or missing product ID" },
+        { status: 400 }
+      );
+    }
+
     const product = await Product.findById(pid).select("image");
 
     if (!product || !product.image?.data) {

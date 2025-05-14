@@ -8,8 +8,13 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "@/redux/slices/wishlistSlice";
+import {
+  fetchBag,
+  addToBag,
+  updateBagQuantity,
+} from "@/redux/slices/shoppingBagSlice";
 import ProductCarousel from "@/components/section/productCarousel";
-import { Heart, Share2 } from "@/components/icons";
+import { Heart, Share2, FaShoppingBag } from "@/components/icons";
 import { toast } from "react-toastify";
 
 interface SingleProductProps {
@@ -37,6 +42,9 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
   const { wishlist = [] } = useSelector(
     (state: RootState) => state.wishlist || { wishlist: [] }
   );
+  const { bag = [] } = useSelector(
+    (state: RootState) => state.shoppingBag || { bag: [] }
+  );
 
   const isInWishlist = Boolean(
     productData &&
@@ -44,6 +52,14 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
       wishlist &&
       Array.isArray(wishlist) &&
       wishlist.some((item: any) => item && item._id === productData._id)
+  );
+
+  const isInBag = Boolean(
+    productData &&
+      productData._id &&
+      bag &&
+      Array.isArray(bag) &&
+      bag.some((item: any) => item && item.product._id === productData._id)
   );
 
   useEffect(() => {
@@ -71,6 +87,28 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
         .unwrap()
         .then(() => {
           dispatch(fetchWishlist({ page: 1, limit: 100 }));
+        })
+        .catch((error) => {});
+    }
+  };
+
+  const toggleBag = () => {
+    if (!productData || !productData._id) {
+      toast.error("Product information is not available");
+      return;
+    }
+    if (isInBag) {
+      dispatch(updateBagQuantity({ productId: productData._id, action: 1 }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchBag({ page: 1, limit: 100 }));
+        })
+        .catch((error) => {});
+    } else {
+      dispatch(addToBag({ productId: productData._id }))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchBag({ page: 1, limit: 100 }));
         })
         .catch((error) => {});
     }
@@ -233,8 +271,12 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
                 <Heart size={20} fill={isInWishlist ? "#db2777" : "none"} />
               </button>
 
-              <button className="flex-grow bg-black text-white font-medium py-3 px-6 rounded-full cursor-pointer hover:bg-gray-800 transition duration-200">
-                ADD TO BAG
+              <button
+                className="flex items-center justify-center gap-2 flex-grow bg-black text-white font-medium py-3 px-6 rounded-full cursor-pointer hover:bg-gray-800 transition duration-200"
+                onClick={toggleBag}
+              >
+                <span>ADD TO BAG</span>
+                <FaShoppingBag className="w-4 h-4 text-white" />
               </button>
 
               <button

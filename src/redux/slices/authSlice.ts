@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { setWishlistItems } from "./wishlistSlice";
+import { setBagItems } from "./shoppingBagSlice";
 
 interface User {
   _id: string;
@@ -75,6 +76,13 @@ export const fetchUserDetails = createAsyncThunk(
       if (res.data.success) {
         if (res.data.user.wishlist && res.data.user.wishlist.length > 0) {
           dispatch(setWishlistItems(res.data.user.wishlist));
+        }
+        if (res.data.user.shoppingBag && res.data.user.shoppingBag.length > 0) {
+          const bagItems = res.data.user.shoppingBag.map((item: any) => ({
+            product: item.product,
+            quantity: item.quantity,
+          }));
+          dispatch(setBagItems(bagItems));
         }
         return res.data.user;
       } else {

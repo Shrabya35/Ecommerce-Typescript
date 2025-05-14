@@ -28,7 +28,6 @@ export async function POST(req: Request) {
     const { productId }: wishlistParams = await req.json();
 
     if (!mongoose.models.Product) {
-      console.log("Product model is not registered, registering now");
       require("@/models/Product");
     }
 

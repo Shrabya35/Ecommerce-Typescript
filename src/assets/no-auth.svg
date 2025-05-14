@@ -1,0 +1,18 @@
+<svg width="200" height="170" viewBox="0 0 200 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="170" fill="white"/>
+  
+    <circle cx="100" cy="85" r="60" fill="#F5F5F5"/>
+  
+    <circle cx="100" cy="70" r="20" fill="#6E6E6E"/>
+    <path d="M70 115c0-17 13-30 30-30s30 13 30 30v3H70v-3Z" fill="#6E6E6E"/>
+  
+    <path d="M90 102v-12a10 10 0 0120 0v12" stroke="#FFFFFF" stroke-width="4"/>
+    
+    <rect x="80" y="102" width="40" height="30" rx="8" fill="white" stroke="#6E6E6E" stroke-width="2"/>
+    
+    <path d="M90 102v-12a10 10 0 0120 0v12" stroke="#6E6E6E" stroke-width="2" fill="none"/>
+  
+    <circle cx="100" cy="118" r="3" fill="#6E6E6E"/>
+    <path d="M100 118v6" stroke="#6E6E6E" stroke-width="1.5"/>
+  </svg>
+  
