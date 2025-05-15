@@ -21,6 +21,7 @@ import About3 from "./about3.png";
 import AppMockup from "./app_mockup.png";
 import Esewa from "./e_sewa.png";
 import Khalti from "./khalti.png";
+import CashOnDelivery from "./cash_on_delivery.png";
 import QrCode from "./qrcode.png";
 
 export {
@@ -44,5 +45,6 @@ export {
   AppMockup,
   Esewa,
   Khalti,
+  CashOnDelivery,
   QrCode,
 };

@@ -90,7 +90,7 @@ const ShoppingBagPage = () => {
 
     const fetchData = async () => {
       try {
-        await dispatch(fetchBag({ page: currentPage, limit: 5 })).unwrap();
+        await dispatch(fetchBag({ page: currentPage, limit: 10 })).unwrap();
         if (fetchId === fetchRef.current && isMounted.current) {
         }
       } catch (err) {

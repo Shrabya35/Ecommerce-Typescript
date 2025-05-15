@@ -10,8 +10,8 @@ export interface IOrder extends Document {
   address: {
     country: string;
     city: string;
-    addressLine1: string;
-    addressLine2: string;
+    street: string;
+    secondary?: string;
     postalCode: string;
   };
   mode: 0 | 1; // 0 = COD, 1 = eSewa
@@ -49,11 +49,25 @@ const orderSchema = new Schema<IOrder>(
       required: true,
     },
     address: {
-      country: { type: String, required: true },
-      city: { type: String, required: true },
-      addressLine1: { type: String, required: true },
-      addressLine2: { type: String, required: true },
-      postalCode: { type: String, required: true },
+      country: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      street: {
+        type: String,
+        required: true,
+      },
+      secondary: {
+        type: String,
+      },
+      postalCode: {
+        type: String,
+        required: true,
+      },
     },
     mode: {
       type: Number,

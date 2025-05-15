@@ -87,7 +87,7 @@ userSchema.methods.calculateCartTotals = async function () {
     subtotal += price * item.quantity;
   }
 
-  const estimatedShipping = subtotal > 999 ? 0 : 180;
+  const estimatedShipping = subtotal > 9999 ? 0 : 180;
   const total = subtotal + estimatedShipping;
 
   return {
