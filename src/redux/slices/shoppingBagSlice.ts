@@ -30,6 +30,7 @@ interface bagState {
   subtotal: number;
   estimatedShipping: number;
   totalPrice: number;
+  totalItems: number;
   page: number;
   limit: number;
   total: number;
@@ -66,6 +67,7 @@ export const fetchBag = createAsyncThunk(
         subtotal: number;
         estimatedShipping: number;
         totalPrice: number;
+        totalItems: number;
         total: number;
         page: number;
         limit: number;
@@ -83,6 +85,7 @@ export const fetchBag = createAsyncThunk(
         subtotal: res.data.subtotal || 0,
         estimatedShipping: res.data.estimatedShipping || 0,
         totalPrice: res.data.totalPrice || 0,
+        totalItems: res.data.totalItems || 0,
         page: res.data.page || page,
         total: res.data.total || bagItems.length,
         totalPages: res.data.totalPages || 1,
@@ -195,6 +198,7 @@ const initialState: bagState = {
   subtotal: 0,
   estimatedShipping: 0,
   totalPrice: 0,
+  totalItems: 0,
   page: 1,
   limit: 10,
   total: 0,
@@ -231,6 +235,7 @@ const shoppingBagSlice = createSlice({
         state.subtotal = action.payload.subtotal;
         state.estimatedShipping = action.payload.estimatedShipping;
         state.totalPrice = action.payload.totalPrice;
+        state.totalItems = action.payload.totalItems;
         state.page = action.payload.page;
         state.total = action.payload.total;
         state.totalPages = action.payload.totalPages;

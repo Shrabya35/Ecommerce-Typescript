@@ -1,5 +1,12 @@
+import { Metadata } from "next";
 import { type NextPage } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | LynxLine",
+  description:
+    "Understand how LynxLine collects, uses, and protects your personal information in accordance with our privacy practices.",
+};
 
 const PrivacyPolicy: NextPage = () => {
   return (

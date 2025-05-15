@@ -228,6 +228,10 @@ export async function GET(req: Request) {
     }
 
     const fullShoppingBag = populatedUser.shoppingBag || [];
+    const totalItems = fullShoppingBag.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
     const totalShoppingBag = fullShoppingBag.length;
 
     const totals = await populatedUser.calculateCartTotals();
@@ -251,6 +255,7 @@ export async function GET(req: Request) {
         subtotal: totals.subtotal,
         estimatedShipping: totals.estimatedShipping,
         totalPrice: totals.total,
+        totalItems,
         total: totalShoppingBag,
         page,
         limit,

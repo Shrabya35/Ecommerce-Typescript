@@ -53,6 +53,7 @@ const ShoppingBagPage = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(
     null
@@ -62,6 +63,7 @@ const ShoppingBagPage = () => {
     subtotal,
     estimatedShipping,
     totalPrice,
+    totalItems,
     loading,
     error,
     page,
@@ -88,7 +90,7 @@ const ShoppingBagPage = () => {
 
     const fetchData = async () => {
       try {
-        await dispatch(fetchBag({ page: currentPage, limit: 10 })).unwrap();
+        await dispatch(fetchBag({ page: currentPage, limit: 5 })).unwrap();
         if (fetchId === fetchRef.current && isMounted.current) {
         }
       } catch (err) {
@@ -185,6 +187,8 @@ const ShoppingBagPage = () => {
   };
 
   const handlesecureCheckout = async () => {
+    if (checkoutLoading) return;
+    setCheckoutLoading(true);
     try {
       const res = await axios.post("/api/session/checkout", {
         withCredentials: true,
@@ -195,6 +199,7 @@ const ShoppingBagPage = () => {
       const data = res.data;
 
       if (res.status === 200 && data.success) {
+        setCheckoutLoading(false);
         router.push("/checkout");
       } else {
         toast.error("Failed to create checkout session");
@@ -561,7 +566,7 @@ const ShoppingBagPage = () => {
               Order Summary
             </h3>
             <div className="flex items-center justify-between w-full">
-              <p>Subtotal ({total} items):</p>
+              <p>Subtotal ({totalItems} items):</p>
               <p>₹ {formatNumberNPR(subtotal)}</p>
             </div>
             <div className="flex items-center justify-between w-full">
@@ -575,8 +580,13 @@ const ShoppingBagPage = () => {
             <button
               className="mt-2 bg-black text-white py-2 cursor-pointer rounded-md hover:bg-gray-600"
               onClick={handlesecureCheckout}
+              disabled={checkoutLoading}
             >
-              Proceed to Checkout
+              {checkoutLoading ? (
+                <ClipLoader size={20} color="#FFFFF" />
+              ) : (
+                <span className="mr-2">Proceed to Checkout</span>
+              )}
             </button>
           </div>
         </div>

@@ -100,13 +100,6 @@ const ViewAllPage = () => {
     }
   };
 
-  const truncateDescription = (description: string) => {
-    if (description.length > 120) {
-      return description.substring(0, 120) + "...";
-    }
-    return description;
-  };
-
   if (isLoading)
     return (
       <div className="flex justify-center items-center min-h-screen">

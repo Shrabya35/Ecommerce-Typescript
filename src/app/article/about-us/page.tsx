@@ -1,7 +1,15 @@
+import { Metadata } from "next";
 import { type NextPage } from "next";
+
 import Image from "next/image";
 import Link from "next/link";
 import { About1, About2, About3 } from "@/assets";
+
+export const metadata: Metadata = {
+  title: "About us | LynxLine",
+  description:
+    "Discover the story behind LynxLine — our mission, values, and the passion driving our fashion-forward journey.",
+};
 
 const About: NextPage = () => {
   return (

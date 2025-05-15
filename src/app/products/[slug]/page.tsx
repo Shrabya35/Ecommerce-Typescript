@@ -1,4 +1,5 @@
 import SingleProduct from "../singleProduct";
+import { Metadata } from "next";
 
 interface ProductPageProps {
   params: {
@@ -6,7 +7,15 @@ interface ProductPageProps {
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params;
-  return <SingleProduct slug={slug} />;
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  return {
+    title: `${params.slug} | LynxLine`,
+    description: `View details about the product "${params.slug}". Find the best deals on LynxLine.`,
+  };
+}
+
+export default function ProductPage({ params }: ProductPageProps) {
+  return <SingleProduct slug={params.slug} />;
 }

@@ -1,5 +1,12 @@
+import { Metadata } from "next";
 import { type NextPage } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Return Policy | LynxLine",
+  description:
+    "Find out how to return or exchange items at LynxLine. Easy steps, clear guidelines, and hassle-free support.",
+};
 
 const ReturnPolicy: NextPage = () => {
   return (

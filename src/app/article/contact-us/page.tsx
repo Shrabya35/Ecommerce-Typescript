@@ -1,5 +1,12 @@
+import { Metadata } from "next";
 import { type NextPage } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Contact Us | LynxLine",
+  description:
+    "Have questions or need support? Get in touch with the LynxLine team — we're here to help.",
+};
 
 const Contact: NextPage = () => {
   return (
