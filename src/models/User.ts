@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
-// Define IUser interface
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -19,7 +18,6 @@ export interface IUser extends Document {
   }>;
 }
 
-// Define the schema
 const userSchema = new Schema<IUser>(
   {
     name: {

@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useAuth } from "@/hooks/useAuth";
+import axios from "axios";
+import { toast } from "react-toastify";
 import Image from "next/image";
 import {
   fetchBag,
@@ -68,12 +70,10 @@ const ShoppingBagPage = () => {
     totalPages,
   } = useSelector((state: RootState) => state.shoppingBag);
 
-  // Ref to track latest fetch request and component mount status
   const fetchRef = useRef<number>(0);
   const isMounted = useRef<boolean>(true);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       isMounted.current = false;
@@ -83,16 +83,13 @@ const ShoppingBagPage = () => {
     };
   }, []);
 
-  // Fetch bag with debounce and race condition handling
   useEffect(() => {
     const fetchId = ++fetchRef.current;
 
     const fetchData = async () => {
       try {
         await dispatch(fetchBag({ page: currentPage, limit: 10 })).unwrap();
-        // Only update state if this is the latest fetch and component is mounted
         if (fetchId === fetchRef.current && isMounted.current) {
-          // State is already updated by Redux
         }
       } catch (err) {
         if (isMounted.current) {
@@ -101,7 +98,6 @@ const ShoppingBagPage = () => {
       }
     };
 
-    // Debounce fetch to prevent rapid page changes
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
@@ -185,6 +181,27 @@ const ShoppingBagPage = () => {
   const handlePageChange = (pageNum: number) => {
     if (pageNum >= 1 && pageNum <= totalPages && isMounted.current) {
       setCurrentPage(pageNum);
+    }
+  };
+
+  const handlesecureCheckout = async () => {
+    try {
+      const res = await axios.post("/api/session/checkout", {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = res.data;
+
+      if (res.status === 200 && data.success) {
+        router.push("/checkout");
+      } else {
+        toast.error("Failed to create checkout session");
+      }
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      message.error(error);
     }
   };
 
@@ -339,11 +356,11 @@ const ShoppingBagPage = () => {
                   >
                     {item.product.discount > 0 ? (
                       <div className="flex items-center gap-1.5">
-                        <span className="text-pink-500 font-medium">
-                          ₹ {formatNumberNPR(item.product.discountedPrice)}
-                        </span>
-                        <span className="text-xs text-gray-400 line-through">
+                        <span className="text-xs text-pink-500 line-through">
                           ₹ {formatNumberNPR(item.product.price)}
+                        </span>
+                        <span className="text-black font-medium">
+                          ₹ {formatNumberNPR(item.product.discountedPrice)}
                         </span>
                       </div>
                     ) : (
@@ -555,7 +572,10 @@ const ShoppingBagPage = () => {
               <p>Total:</p>
               <p>₹ {formatNumberNPR(totalPrice)}</p>
             </div>
-            <button className="mt-2 bg-black text-white py-2 cursor-pointer rounded-md hover:bg-gray-600">
+            <button
+              className="mt-2 bg-black text-white py-2 cursor-pointer rounded-md hover:bg-gray-600"
+              onClick={handlesecureCheckout}
+            >
               Proceed to Checkout
             </button>
           </div>

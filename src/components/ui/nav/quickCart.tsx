@@ -152,12 +152,12 @@ const QuickCart: React.FC<QuickCartProps> = ({ isCartOpen, closeCart }) => {
               </h3>
 
               {item.product.discount > 0 ? (
-                <div className="flex items-center gap-1">
-                  <span className="text-pink-500 font-medium">
-                    ₹ {formatNumberNPR(item.product.discountedPrice)}
-                  </span>
-                  <span className="text-sm text-gray-400 line-through ml-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-pink-500 line-through ml-2">
                     ₹ {formatNumberNPR(item.product.price)}
+                  </span>
+                  <span className="text-black font-medium">
+                    ₹ {formatNumberNPR(item.product.discountedPrice)}
                   </span>
                 </div>
               ) : (

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "LynxLine - Unleash Your Inner Beast",
   description: "Unleash Your Beast",
   icons: {
-    icon: "/file.svg",
+    icon: "/icon.png",
     apple: "/apple-touch-icon.png",
     other: [
       { rel: "icon", sizes: "32x32", url: "/favicon-32x32.png" },

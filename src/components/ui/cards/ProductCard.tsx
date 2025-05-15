@@ -71,7 +71,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                       ₹ {formatNumberNPR(product.price)}
                     </p>
                     <p className="text-base font-bold text-gray-900">
-                      ₹ formatNumberNPR(Number(discountedPrice))
+                      ₹ {formatNumberNPR(Number(discountedPrice))}
                     </p>
                   </div>
                 ) : (
