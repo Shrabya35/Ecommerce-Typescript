@@ -14,6 +14,11 @@ import {
 import Image from "next/image";
 import { Logo2 } from "@/assets";
 import { logout } from "@/redux/slices/authSlice";
+import { clearCategory } from "@/redux/slices/categorySlice";
+import { clearOrder } from "@/redux/slices/orderSlice";
+import { clearProduct } from "@/redux/slices/productSlice";
+import { clearBag } from "@/redux/slices/shoppingBagSlice";
+import { clearWishlist } from "@/redux/slices/wishlistSlice";
 import { AppDispatch } from "@/redux/store";
 
 type SidebarItem = {

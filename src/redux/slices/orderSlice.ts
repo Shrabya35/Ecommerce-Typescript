@@ -133,7 +133,7 @@ const orderSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    resetOrders: (state) => {
+    clearOrder: (state) => {
       state.orders = [];
       state.page = 1;
       state.total = 0;
@@ -189,7 +189,7 @@ const orderSlice = createSlice({
 
 export const {
   clearError,
-  resetOrders,
+  clearOrder,
   clearCurrentOrder,
   clearPendingEsewaOrder,
 } = orderSlice.actions;

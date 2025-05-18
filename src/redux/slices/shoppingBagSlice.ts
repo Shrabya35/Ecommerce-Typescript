@@ -202,6 +202,10 @@ const shoppingBagSlice = createSlice({
 
     clearBag: (state) => {
       state.bag = [];
+      state.subtotal = 0;
+      state.estimatedShipping = 0;
+      state.totalPrice = 0;
+      state.totalItems = 0;
       state.page = 1;
       state.total = 0;
       state.totalPages = 0;
