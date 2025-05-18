@@ -124,53 +124,57 @@ const QuickCart: React.FC<QuickCartProps> = ({ isCartOpen, closeCart }) => {
 
     return (
       <ul className="space-y-6 p-3 sm:p-4">
-        {bag.map((item, index) => (
-          <li
-            key={`${item.product._id}-${index}`}
-            className="flex items-center justify-between gap-4 sm:gap-6 border-b border-gray-200 pb-6"
-          >
-            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={`/api/product/photo/${item.product._id}`}
-                alt={`image of ${item.product._id}`}
-                width={128}
-                height={128}
-                className="object-cover w-full h-full"
-                loading="lazy"
-              />
-            </div>
+        {bag.map((item, index) => {
+          if (!item || !item.product) return null; // Skip invalid entries
 
-            <div className="flex flex-col justify-between flex-grow space-y-2">
-              {item.product.discount > 0 && (
-                <span className="text-xs font-semibold text-white bg-pink-500 w-fit px-3 py-1.5 tracking-tight">
-                  {item.product.discount}% OFF
-                </span>
-              )}
+          return (
+            <li
+              key={`${item.product._id}-${index}`}
+              className="flex items-center justify-between gap-4 sm:gap-6 border-b border-gray-200 pb-6"
+            >
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden flex-shrink-0">
+                <Image
+                  src={`/api/product/photo/${item.product._id}`}
+                  className="w-full h-full object-cover"
+                  alt={`Image of ${item.product.name}`}
+                  width={500}
+                  height={300}
+                  loading="lazy"
+                />
+              </div>
 
-              <h3 className="text-base sm:text-xl text-gray-900 tracking-tight">
-                {item.product.name}
-              </h3>
+              <div className="flex flex-col justify-between flex-grow space-y-2">
+                {item.product.discount > 0 && (
+                  <span className="text-xs font-semibold text-white bg-pink-500 w-fit px-3 py-1.5 tracking-tight">
+                    {item.product.discount}% OFF
+                  </span>
+                )}
 
-              {item.product.discount > 0 ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-pink-500 line-through ml-2">
+                <h3 className="text-base sm:text-xl text-gray-900 tracking-tight">
+                  {item.product.name}
+                </h3>
+
+                {item.product.discount > 0 ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-pink-500 line-through ml-2">
+                      ₹ {formatNumberNPR(item.product.price)}
+                    </span>
+                    <span className="text-black font-medium">
+                      ₹ {formatNumberNPR(item.product.discountedPrice)}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-black">
                     ₹ {formatNumberNPR(item.product.price)}
                   </span>
-                  <span className="text-black font-medium">
-                    ₹ {formatNumberNPR(item.product.discountedPrice)}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-black">
-                  ₹ {formatNumberNPR(item.product.price)}
-                </span>
-              )}
-              <p className="text-sm font-bold text-gray-700">
-                Qty: {item.quantity}
-              </p>
-            </div>
-          </li>
-        ))}
+                )}
+                <p className="text-sm font-bold text-gray-700">
+                  Qty: {item.quantity}
+                </p>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     );
   };

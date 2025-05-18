@@ -1,4 +1,4 @@
-import { Esewa, Khalti } from "@/assets";
+import { Esewa } from "@/assets";
 import type { StaticImageData } from "next/image";
 
 type Testimonial = {
@@ -60,7 +60,6 @@ export const footerLinks = [
 
 export const paymentOptions: { image: StaticImageData; label: string }[] = [
   { image: Esewa, label: "Esewa" },
-  { image: Khalti, label: "Khalti" },
 ];
 
 export const countries: { code: string; label: string }[] = [

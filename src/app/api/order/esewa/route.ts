@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
     }
 
     const body: OrderParams = await req.json();
-    console.log("POST request body:", body);
 
     if (!body.address || body.mode !== 1) {
       return NextResponse.json(
@@ -76,8 +75,6 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-
-    console.log("User before update:", { tempAddress: user.tempAddress });
 
     if (!user.shoppingBag || user.shoppingBag.length === 0) {
       return NextResponse.json(
@@ -139,19 +136,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save address to user.tempAddress
-    console.log("Saving tempAddress:", body.address);
     user.tempAddress = body.address;
     try {
       await user.save();
       const updatedUser = await User.findById(userId._id);
-      if (updatedUser) {
-        console.log("User after save:", {
-          tempAddress: updatedUser.tempAddress,
-        });
-      } else {
-        console.error("Failed to retrieve updated user after save");
-      }
+      // if (updatedUser) {
+      //   console.log("User after save:", {
+      //     tempAddress: updatedUser.tempAddress,
+      //   });
+      // } else {
+      //   console.error("Failed to retrieve updated user after save");
+      // }
     } catch (saveError: any) {
       console.error("Error saving user.tempAddress:", saveError);
       return NextResponse.json(
@@ -192,8 +187,6 @@ export async function POST(req: NextRequest) {
     )}&fu=${encodeURIComponent(
       esewaConfig.failure_url
     )}&sig=${encodeURIComponent(signature)}`;
-
-    console.log("eSewa redirect URL:", redirect);
 
     return NextResponse.json({
       success: true,
