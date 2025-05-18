@@ -7,10 +7,14 @@ export interface IUser extends Document {
   phone: string;
   role: number;
   wishlist: mongoose.Types.ObjectId[];
-  shoppingBag: {
-    product: mongoose.Types.ObjectId;
-    quantity: number;
-  }[];
+  shoppingBag: { product: mongoose.Types.ObjectId; quantity: number }[];
+  tempAddress?: {
+    country: string;
+    city: string;
+    street: string;
+    secondary?: string;
+    postalCode: string;
+  };
   calculateCartTotals: () => Promise<{
     subtotal: number;
     estimatedShipping: number;
@@ -63,6 +67,25 @@ const userSchema = new Schema<IUser>(
         },
       },
     ],
+    tempAddress: {
+      country: { type: String, default: "" },
+      city: {
+        type: String,
+        default: "",
+      },
+      street: {
+        type: String,
+        default: "",
+      },
+      secondary: {
+        type: String,
+        default: "",
+      },
+      postalCode: {
+        type: String,
+        default: "",
+      },
+    },
   },
   { timestamps: true }
 );
@@ -87,7 +110,7 @@ userSchema.methods.calculateCartTotals = async function () {
     subtotal += price * item.quantity;
   }
 
-  const estimatedShipping = subtotal > 9999 ? 0 : 180;
+  const estimatedShipping = subtotal === 0 ? 0 : subtotal > 9999 ? 0 : 180;
   const total = subtotal + estimatedShipping;
 
   return {

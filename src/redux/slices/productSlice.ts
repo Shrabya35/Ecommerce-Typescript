@@ -1,27 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { IProduct } from "@/interface";
 import { toast } from "react-toastify";
 
-interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  type: string;
-  description: string;
-  price: number;
-  discount: number;
-  discountedPrice: number | null;
-  category: string;
-  quantity: number;
-  image?: {
-    data: string;
-    contentType: string;
-  };
-}
-
 interface ProductState {
-  products: Product[];
-  singleProduct: Product | null;
+  products: IProduct[];
+  singleProduct: IProduct | null;
   loading: boolean;
   error: string | null;
   page: number;
@@ -218,7 +202,7 @@ const productSlice = createSlice({
       })
       .addCase(
         addProduct.fulfilled,
-        (state, action: PayloadAction<Product>) => {
+        (state, action: PayloadAction<IProduct>) => {
           state.products.unshift(action.payload);
           state.total += 1;
           state.loading = false;
@@ -234,7 +218,7 @@ const productSlice = createSlice({
       })
       .addCase(
         updateProduct.fulfilled,
-        (state, action: PayloadAction<Product>) => {
+        (state, action: PayloadAction<IProduct>) => {
           state.products = state.products.map((p) =>
             p._id === action.payload._id ? action.payload : p
           );

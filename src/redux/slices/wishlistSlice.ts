@@ -1,26 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  type: string;
-  description: string;
-  price: number;
-  discount: number;
-  discountedPrice: number | null;
-  category: string | { name: string; _id: string; __v?: number };
-  quantity: number;
-  image?: {
-    data: string;
-    contentType: string;
-  };
-}
+import { IProduct } from "@/interface";
 
 interface WishlistState {
-  wishlist: Product[];
+  wishlist: IProduct[];
   loading: boolean;
   error: string | null;
   page: number;
@@ -57,7 +41,7 @@ export const fetchWishlist = createAsyncThunk(
     try {
       const res = await axios.get<{
         success: boolean;
-        wishlist: Product[];
+        wishlist: IProduct[];
         total: number;
         totalPages: number;
       }>(`/api/user/wishlist?page=${page}&limit=${limit}`, {
@@ -88,7 +72,7 @@ export const addToWishlist = createAsyncThunk(
       const res = await axios.post<{
         success: boolean;
         message: string;
-        product: Product;
+        product: IProduct;
       }>(
         `/api/user/wishlist`,
         { productId },
@@ -116,7 +100,7 @@ export const removeFromWishlist = createAsyncThunk(
       const res = await axios.put<{
         success: boolean;
         message: string;
-        product: Product;
+        product: IProduct;
       }>(
         `/api/user/wishlist`,
         { productId },
@@ -148,7 +132,7 @@ const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    setWishlistItems: (state, action: PayloadAction<Product[]>) => {
+    setWishlistItems: (state, action: PayloadAction<IProduct[]>) => {
       state.wishlist = action.payload;
       state.total = action.payload.length;
       state.loading = false;
@@ -172,7 +156,7 @@ const wishlistSlice = createSlice({
         (
           state,
           action: PayloadAction<{
-            items: Product[];
+            items: IProduct[];
             page: number;
             total: number;
             totalPages: number;
@@ -197,7 +181,7 @@ const wishlistSlice = createSlice({
       })
       .addCase(
         addToWishlist.fulfilled,
-        (state, action: PayloadAction<Product>) => {
+        (state, action: PayloadAction<IProduct>) => {
           if (!state.wishlist.some((item) => item._id === action.payload._id)) {
             state.wishlist.push(action.payload);
             state.total += 1;

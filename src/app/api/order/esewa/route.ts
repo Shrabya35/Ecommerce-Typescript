@@ -48,6 +48,8 @@ export async function POST(req: NextRequest) {
     }
 
     const body: OrderParams = await req.json();
+    console.log("POST request body:", body);
+
     if (!body.address || body.mode !== 1) {
       return NextResponse.json(
         { success: false, message: "Invalid request parameters" },
@@ -67,7 +69,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Find user and validate shopping bag
     const user = await User.findById(userId._id);
     if (!user) {
       return NextResponse.json(
@@ -75,6 +76,8 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
+
+    console.log("User before update:", { tempAddress: user.tempAddress });
 
     if (!user.shoppingBag || user.shoppingBag.length === 0) {
       return NextResponse.json(
@@ -98,7 +101,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify product availability
     const productPromises = validItems.map((item: any) =>
       Product.findById(item.product)
     );
@@ -137,11 +139,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save address to user.tempAddress (outside transaction)
+    // Save address to user.tempAddress
+    console.log("Saving tempAddress:", body.address);
     user.tempAddress = body.address;
-    await user.save();
+    try {
+      await user.save();
+      const updatedUser = await User.findById(userId._id);
+      if (updatedUser) {
+        console.log("User after save:", {
+          tempAddress: updatedUser.tempAddress,
+        });
+      } else {
+        console.error("Failed to retrieve updated user after save");
+      }
+    } catch (saveError: any) {
+      console.error("Error saving user.tempAddress:", saveError);
+      return NextResponse.json(
+        { success: false, message: "Failed to save address" },
+        { status: 500 }
+      );
+    }
 
-    // Generate transaction UUID
     const transactionUuid = uuidv4();
 
     const esewaConfig = {

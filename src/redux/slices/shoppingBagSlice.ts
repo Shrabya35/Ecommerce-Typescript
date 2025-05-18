@@ -1,26 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  type: string;
-  description: string;
-  price: number;
-  discount: number;
-  discountedPrice: number | null;
-  category: string | { name: string; _id: string; __v?: number };
-  quantity: number;
-  image?: {
-    data: string;
-    contentType: string;
-  };
-}
+import { IProduct } from "@/interface";
 
 interface bagItem {
-  product: Product;
+  product: IProduct;
   quantity: number;
 }
 interface bagState {
@@ -105,7 +89,7 @@ export const addToBag = createAsyncThunk(
       const res = await axios.post<{
         message: string;
         item: {
-          product: Product;
+          product: IProduct;
           quantity: number;
         };
       }>(
@@ -136,7 +120,7 @@ export const removeFromBag = createAsyncThunk(
       const res = await axios.put<{
         message: string;
         item: {
-          product: Product;
+          product: IProduct;
           quantity: number;
         };
       }>(
@@ -278,7 +262,7 @@ const shoppingBagSlice = createSlice({
         removeFromBag.fulfilled,
         (
           state,
-          action: PayloadAction<{ product: Product; quantity: number }>
+          action: PayloadAction<{ product: IProduct; quantity: number }>
         ) => {
           state.bag = state.bag.filter(
             (item) => item.product._id !== action.payload.product._id

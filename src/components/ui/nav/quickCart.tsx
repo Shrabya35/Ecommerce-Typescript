@@ -28,7 +28,7 @@ const QuickCart: React.FC<QuickCartProps> = ({ isCartOpen, closeCart }) => {
   useEffect(() => {
     if (!isCartOpen || !isAuthenticated) return;
 
-    dispatch(fetchBag({ page: 1, limit: 5 }));
+    dispatch(fetchBag({ page: 1, limit: 10 }));
   }, [isCartOpen, isAuthenticated, dispatch]);
 
   useEffect(() => {

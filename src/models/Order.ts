@@ -1,7 +1,7 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IOrder extends Document {
-  order: {
+  product: {
     product: mongoose.Types.ObjectId;
     quantity: number;
   }[];
@@ -14,33 +14,32 @@ export interface IOrder extends Document {
     secondary?: string;
     postalCode: string;
   };
-  mode: 0 | 1; // 0 = COD, 1 = eSewa
+  mode: number;
   status: "pending" | "processing" | "completed" | "cancelled";
-  esewaRefId?: string | null;
+  esewaRefId?: string;
   transactionUuid?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const orderSchema = new Schema<IOrder>(
+const OrderSchema: Schema = new Schema(
   {
-    order: [
+    product: [
       {
-        _id: false,
         product: {
-          type: Schema.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
           required: true,
         },
         quantity: {
           type: Number,
-          default: 1,
+          required: true,
           min: 1,
         },
       },
     ],
     user: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -71,28 +70,23 @@ const orderSchema = new Schema<IOrder>(
     },
     mode: {
       type: Number,
-      enum: [0, 1],
       required: true,
+      enum: [0, 1],
     },
     status: {
       type: String,
       enum: ["pending", "processing", "completed", "cancelled"],
       default: "pending",
-      required: true,
     },
     esewaRefId: {
       type: String,
-      default: null,
     },
     transactionUuid: {
       type: String,
-      default: null,
     },
   },
   { timestamps: true }
 );
 
-const Order: Model<IOrder> =
-  mongoose.models.Order || mongoose.model<IOrder>("Order", orderSchema);
-
-export default Order;
+export default mongoose.models.Order ||
+  mongoose.model<IOrder>("Order", OrderSchema);

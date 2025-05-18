@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { IProduct } from "@/interface";
 import { setWishlistItems } from "./wishlistSlice";
 import { setBagItems } from "./shoppingBagSlice";
 
@@ -10,27 +11,10 @@ interface User {
   email: string;
   phone: string;
   role: number;
-  wishlist: Product[];
+  wishlist: IProduct[];
   shoppingBag: string[];
   createdAt: string;
   updatedAt: string;
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  type: string;
-  description: string;
-  price: number;
-  discount: number;
-  discountedPrice: number | null;
-  category: string;
-  quantity: number;
-  image?: {
-    data: string;
-    contentType: string;
-  };
 }
 
 interface AuthState {
