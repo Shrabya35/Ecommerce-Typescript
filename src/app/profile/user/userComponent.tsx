@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserOrders } from "@/redux/slices/userOrderSlice";
+import { useLogout } from "@/hooks/useLogout";
 import {
   ProfileTab,
   SettingsTab,
@@ -21,6 +22,7 @@ import {
 
 export default function UserProfile() {
   const dispatch = useDispatch<AppDispatch>();
+  const handleLogout = useLogout();
   const { user } = useSelector((state: RootState) => state.auth);
   const { total: wishlistCount } = useSelector(
     (state: RootState) => state.wishlist
@@ -73,10 +75,13 @@ export default function UserProfile() {
                 </div>
               </div>
               <button className="w-full flex items-center justify-between p-3 text-left rounded-md  text-pink-500 hover:text-pink-400 cursor-pointer">
-                <div className="flex items-center">
+                <button
+                  className="flex items-center cursor-pointer"
+                  onClick={handleLogout}
+                >
                   <MdLogout size={18} className="mr-3" />
                   <span>Log Out</span>
-                </div>
+                </button>
               </button>
             </div>
 

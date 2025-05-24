@@ -2,7 +2,6 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import {
   MdDashboard,
   MdCategory,
@@ -13,13 +12,7 @@ import {
 } from "@/components/icons";
 import Image from "next/image";
 import { Logo2 } from "@/assets";
-import { logout } from "@/redux/slices/authSlice";
-import { clearCategory } from "@/redux/slices/categorySlice";
-import { clearOrder } from "@/redux/slices/orderSlice";
-import { clearProduct } from "@/redux/slices/productSlice";
-import { clearBag } from "@/redux/slices/shoppingBagSlice";
-import { clearWishlist } from "@/redux/slices/wishlistSlice";
-import { AppDispatch } from "@/redux/store";
+import { useLogout } from "@/hooks/useLogout";
 
 type SidebarItem = {
   label: string;
@@ -73,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   isMobile,
   setIsSidebarOpen,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const handleLogout = useLogout();
   const pathname = usePathname();
   const router = useRouter();
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(
@@ -95,16 +88,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     }
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(clearCategory());
-    dispatch(clearOrder());
-    dispatch(clearProduct());
-    dispatch(clearBag());
-    dispatch(clearWishlist());
-    router.push("/auth/login");
   };
 
   return (
