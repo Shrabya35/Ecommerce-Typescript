@@ -54,6 +54,10 @@ import {
   Zap,
   Tag,
   TrendingUp,
+  Settings,
+  MapPin,
+  User,
+  Package,
 } from "lucide-react";
 
 export {
@@ -103,4 +107,8 @@ export {
   Zap,
   Tag,
   TrendingUp,
+  Settings,
+  MapPin,
+  User,
+  Package,
 };

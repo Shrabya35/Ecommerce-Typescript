@@ -20,6 +20,24 @@ export const offers: string[] = [
   "📸 Tag us @LynxLine to get featured & win prizes! 🎥",
 ];
 
+export const greetings = [
+  "Early Riser",
+  "Deal Hunter",
+  "Power User",
+  "Style Seeker",
+  "Fast Mover",
+  "Gear Junkie",
+  "Trend Watcher",
+  "Weekend Warrior",
+  "Midnight Scroller",
+  "Explorer Mode",
+  "Focused Shopper",
+  "Loyal Soul",
+  "Wishlist Master",
+  "Savvy Saver",
+  "Always Curious",
+];
+
 export const popularSearches: string[] = [
   "Fresh Fits",
   "Football Jerseys",

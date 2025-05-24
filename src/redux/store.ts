@@ -4,6 +4,7 @@ import productReducer from "./slices/productSlice";
 import categoryReducer from "./slices/categorySlice";
 import wishlistReducer from "./slices/wishlistSlice";
 import ShoppingBagReducer from "./slices/shoppingBagSlice";
+import UserOrderReducer from "./slices/userOrderSlice";
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
@@ -15,6 +16,7 @@ export const store = configureStore({
     category: categoryReducer,
     wishlist: wishlistReducer,
     shoppingBag: ShoppingBagReducer,
+    userOrder: UserOrderReducer,
   },
 });
 

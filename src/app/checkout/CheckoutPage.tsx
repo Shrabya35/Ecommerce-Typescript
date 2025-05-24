@@ -139,7 +139,6 @@ const CheckoutPage = () => {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="text-center">
-          <ClipLoader size={40} color="#E91E63" />
           <PulseLoader color="#000" loading={true} size={10} />
           <p className="mt-4 text-gray-600">Redirecting ...</p>
         </div>

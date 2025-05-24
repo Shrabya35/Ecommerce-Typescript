@@ -87,8 +87,6 @@ export async function GET(req: NextRequest) {
             }
           );
 
-          console.log("eSewa API response:", statusResponse.data);
-
           if (
             statusResponse.data &&
             statusResponse.data.status === "COMPLETE"

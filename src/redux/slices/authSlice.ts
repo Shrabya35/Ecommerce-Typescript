@@ -13,6 +13,13 @@ interface User {
   role: number;
   wishlist: IProduct[];
   shoppingBag: string[];
+  tempAddress: {
+    country: string;
+    city: string;
+    street: string;
+    secondary?: string;
+    postalCode: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

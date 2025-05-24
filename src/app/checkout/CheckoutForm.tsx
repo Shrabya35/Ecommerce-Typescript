@@ -12,6 +12,9 @@ import { Esewa, CashOnDelivery } from "@/assets";
 const CheckoutForm = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
+  const [submitting, setSubmitting] = useState(false);
+
+  const { user } = useSelector((state: RootState) => state.auth);
   const [form, setForm] = useState<{
     country: string;
     street: string;
@@ -20,16 +23,13 @@ const CheckoutForm = () => {
     postalCode: string;
     mode: 0 | 1;
   }>({
-    country: "",
-    street: "",
-    secondary: "",
-    city: "",
-    postalCode: "",
+    country: user?.tempAddress?.country ?? "",
+    city: user?.tempAddress?.city ?? "",
+    street: user?.tempAddress?.street ?? "",
+    secondary: user?.tempAddress?.secondary ?? "",
+    postalCode: user?.tempAddress?.postalCode ?? "",
     mode: 0,
   });
-  const [submitting, setSubmitting] = useState(false);
-
-  const { user } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,8 +102,11 @@ const CheckoutForm = () => {
       <div className="max-w-2xl w-full space-y-8">
         <h2 className="text-xl font-bold text-black">Delivery Contact</h2>
 
-        <div>
-          <label htmlFor="email" className="sr-only">
+        <div className="space-y-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -111,7 +114,7 @@ const CheckoutForm = () => {
             placeholder="Email *"
             value={user.email || ""}
             disabled
-            className="w-full border border-gray-300 rounded-md py-2 px-3 text-black bg-gray-100 cursor-not-allowed"
+            className="w-full border border-gray-300 rounded-md py-2 px-3 text-black bg-gray-100 cursor-not-allowed focus:outline-none"
             aria-disabled="true"
           />
         </div>
@@ -120,141 +123,168 @@ const CheckoutForm = () => {
           Shipping Information
         </h3>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="country" className="sr-only">
-              Country
-            </label>
-            <input
-              id="country"
-              placeholder="Country *"
-              value={form.country}
-              onChange={(e) => setForm({ ...form, country: e.target.value })}
-              required
-              disabled={submitting}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
-              aria-required="true"
-            />
-          </div>
-          <div>
-            <label htmlFor="street" className="sr-only">
-              Street Address
-            </label>
-            <input
-              id="street"
-              placeholder="Street Address *"
-              value={form.street}
-              onChange={(e) => setForm({ ...form, street: e.target.value })}
-              required
-              disabled={submitting}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
-              aria-required="true"
-            />
-          </div>
-          <div>
-            <label htmlFor="secondary" className="sr-only">
-              Apartment, Suite, etc.
-            </label>
-            <input
-              id="secondary"
-              placeholder="Apartment, Suite, etc. (optional)"
-              value={form.secondary}
-              onChange={(e) => setForm({ ...form, secondary: e.target.value })}
-              disabled={submitting}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
-            />
-          </div>
-          <div>
-            <label htmlFor="city" className="sr-only">
-              City
-            </label>
-            <input
-              id="city"
-              placeholder="City *"
-              value={form.city}
-              onChange={(e) => setForm({ ...form, city: e.target.value })}
-              required
-              disabled={submitting}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
-              aria-required="true"
-            />
-          </div>
-          <div>
-            <label htmlFor="postalCode" className="sr-only">
-              Postal Code
-            </label>
-            <input
-              id="postalCode"
-              placeholder="Postal Code *"
-              value={form.postalCode}
-              onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
-              required
-              disabled={submitting}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
-              aria-required="true"
-            />
-          </div>
-          <div className="flex flex-row space-x-4">
-            <label
-              className="flex-1 flex items-center justify-between border border-gray-300 rounded-md py-2 px-3 text-black focus-within:border-black cursor-pointer"
-              aria-label="Cash on Delivery"
-            >
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  name="mode"
-                  value="0"
-                  checked={form.mode === 0}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      mode: parseInt(e.target.value) as 0 | 1,
-                    })
-                  }
-                  disabled={submitting}
-                  className="mr-2"
-                  aria-checked={form.mode === 0}
-                />
-                <span>Cash on Delivery</span>
-              </div>
-              <Image
-                src={CashOnDelivery}
-                alt="Cash on Delivery"
-                width={40}
-                height={20}
-                className="object-contain"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="country"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Country *
+              </label>
+              <input
+                id="country"
+                placeholder="Country"
+                value={form.country}
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
+                required
+                disabled={submitting}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
+                aria-required="true"
               />
-            </label>
-            <label
-              className="flex-1 flex items-center justify-between border border-gray-300 rounded-md py-2 px-3 text-black focus-within:border-black cursor-pointer"
-              aria-label="eSewa"
-            >
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  name="mode"
-                  value="1"
-                  checked={form.mode === 1}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      mode: parseInt(e.target.value) as 0 | 1,
-                    })
-                  }
-                  disabled={submitting}
-                  className="mr-2"
-                  aria-checked={form.mode === 1}
-                />
-                <span>eSewa</span>
-              </div>
-              <Image
-                src={Esewa}
-                alt="eSewa"
-                width={40}
-                height={20}
-                className="object-contain"
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="city"
+                className="block text-sm font-medium text-gray-700"
+              >
+                City *
+              </label>
+              <input
+                id="city"
+                placeholder="City"
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                required
+                disabled={submitting}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
+                aria-required="true"
               />
-            </label>
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <label
+                htmlFor="street"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Street Address *
+              </label>
+              <input
+                id="street"
+                placeholder="Street Address"
+                value={form.street}
+                onChange={(e) => setForm({ ...form, street: e.target.value })}
+                required
+                disabled={submitting}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
+                aria-required="true"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <label
+                htmlFor="secondary"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Apartment, Suite, etc. (optional)
+              </label>
+              <input
+                id="secondary"
+                placeholder="Apartment, Suite, etc."
+                value={form.secondary}
+                onChange={(e) =>
+                  setForm({ ...form, secondary: e.target.value })
+                }
+                disabled={submitting}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
+              />
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="postalCode"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Postal Code *
+              </label>
+              <input
+                id="postalCode"
+                placeholder="Postal Code"
+                value={form.postalCode}
+                onChange={(e) =>
+                  setForm({ ...form, postalCode: e.target.value })
+                }
+                required
+                disabled={submitting}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 text-black placeholder-gray-400 focus:outline-safe focus:border-black"
+                aria-required="true"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <span className="block text-sm font-medium text-gray-700">
+              Payment Method
+            </span>
+            <div className="flex flex-row space-x-4">
+              <label
+                className="flex-1 flex items-center justify-between border border-gray-300 rounded-md py-2 px-3 text-black focus-within:border-black cursor-pointer"
+                aria-label="Cash on Delivery"
+              >
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="mode"
+                    value="0"
+                    checked={form.mode === 0}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        mode: parseInt(e.target.value) as 0 | 1,
+                      })
+                    }
+                    disabled={submitting}
+                    className="mr-2"
+                    aria-checked={form.mode === 0}
+                  />
+                  <span>Cash on Delivery</span>
+                </div>
+                <Image
+                  src={CashOnDelivery}
+                  alt="Cash on Delivery"
+                  width={40}
+                  height={20}
+                  className="object-contain"
+                />
+              </label>
+              <label
+                className="flex-1 flex items-center justify-between border border-gray-300 rounded-md py-2 px-3 text-black focus-within:border-black cursor-pointer"
+                aria-label="eSewa"
+              >
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="mode"
+                    value="1"
+                    checked={form.mode === 1}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        mode: parseInt(e.target.value) as 0 | 1,
+                      })
+                    }
+                    disabled={submitting}
+                    className="mr-2"
+                    aria-checked={form.mode === 1}
+                  />
+                  <span>eSewa</span>
+                </div>
+                <Image
+                  src={Esewa}
+                  alt="eSewa"
+                  width={40}
+                  height={20}
+                  className="object-contain"
+                />
+              </label>
+            </div>
           </div>
 
           <button

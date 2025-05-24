@@ -15,7 +15,7 @@ export interface IOrder extends Document {
     postalCode: string;
   };
   mode: number;
-  status: "pending" | "processing" | "completed" | "cancelled";
+  status: "processing" | "completed" | "cancelled";
   esewaRefId?: string;
   transactionUuid?: string;
   createdAt: Date;
@@ -75,8 +75,8 @@ const OrderSchema: Schema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "processing", "completed", "cancelled"],
-      default: "pending",
+      enum: ["processing", "completed", "cancelled"],
+      default: "processing",
     },
     esewaRefId: {
       type: String,

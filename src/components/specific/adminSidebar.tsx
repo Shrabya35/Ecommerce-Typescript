@@ -99,6 +99,11 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearCategory());
+    dispatch(clearOrder());
+    dispatch(clearProduct());
+    dispatch(clearBag());
+    dispatch(clearWishlist());
     router.push("/auth/login");
   };
 
