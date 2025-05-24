@@ -64,12 +64,10 @@ export const fetchUserOrders = createAsyncThunk<
       });
 
       const data = response.data;
-      console.log("Server response:", data); // Debug server response
       if (!data.success) {
         throw new Error(data.message || "Failed to fetch orders");
       }
 
-      // Transform orders to ensure product.product is not a string
       const transformedOrders = data.orders.map((order: any) => ({
         ...order,
         product: order.product.map((item: any) => ({
@@ -77,7 +75,7 @@ export const fetchUserOrders = createAsyncThunk<
           product:
             item.product && typeof item.product === "object"
               ? item.product
-              : null, // Handle unpopulated or string product
+              : null,
         })),
       }));
 
@@ -162,7 +160,6 @@ const userOrdersSlice = createSlice({
           state.totalPages = action.payload.totalPages;
           state.limit = action.payload.limit;
           state.statusSummary = action.payload.statusSummary;
-          console.log("Updated userOrders:", action.payload.orders); // Debug state
         }
       )
       .addCase(fetchUserOrders.rejected, (state, action) => {

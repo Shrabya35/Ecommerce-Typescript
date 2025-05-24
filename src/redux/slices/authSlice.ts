@@ -33,6 +33,16 @@ interface AuthState {
   error: string | null;
 }
 
+interface AddressParams {
+  address: {
+    country: string;
+    city: string;
+    street: string;
+    secondary?: string;
+    postalCode: string;
+  };
+}
+
 interface LoginParams {
   credentials: { email: string; password: string; rememberMe: boolean };
 }
@@ -81,6 +91,29 @@ export const fetchUserDetails = createAsyncThunk(
       }
     } catch (error) {
       return rejectWithValue("Error fetching user");
+    }
+  }
+);
+
+export const updateUserAddress = createAsyncThunk(
+  "auth/updateUserAddress",
+  async ({ address }: AddressParams, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch("/api/user/address", address, {
+        withCredentials: true,
+      });
+
+      if (!response.data) {
+        return rejectWithValue("Failed to update address");
+      }
+
+      toast.success("Address updated successfully");
+      return response.data.tempAddress;
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message || "Failed to update address";
+      toast.error(errorMsg);
+      return rejectWithValue(errorMsg);
     }
   }
 );
@@ -192,6 +225,24 @@ const authSlice = createSlice({
         state.error =
           typeof action.payload === "string" ? action.payload : null;
         state.user = null;
+      })
+      .addCase(updateUserAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateUserAddress.fulfilled,
+        (state, action: PayloadAction<User["tempAddress"]>) => {
+          state.loading = false;
+          if (state.user) {
+            state.user.tempAddress = action.payload;
+          }
+          state.error = null;
+        }
+      )
+      .addCase(updateUserAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string | null;
       })
       .addCase(login.pending, (state) => {
         state.loading = true;

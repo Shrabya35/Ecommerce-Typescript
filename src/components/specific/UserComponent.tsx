@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserOrders } from "@/redux/slices/userOrderSlice";
+import { updateUserAddress } from "@/redux/slices/authSlice";
 import { formatDate } from "@/utils/formatDate";
 import { formatNumberNPR } from "@/utils/formatNumberNpr";
 import { greetings } from "@/constants";
@@ -181,7 +182,8 @@ export const ProfileTab = () => {
 };
 
 export const AddressTab = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, loading } = useSelector((state: RootState) => state.auth);
   const [formData, setFormData] = useState({
     country: user?.tempAddress.country,
     city: user?.tempAddress.city,
@@ -198,16 +200,45 @@ export const AddressTab = () => {
     }));
   };
 
+  const handleUpdateAddress = async () => {
+    if (
+      !user?.tempAddress ||
+      formData.country !== (user.tempAddress.country || "") ||
+      formData.city !== (user.tempAddress.city || "") ||
+      formData.street !== (user.tempAddress.street || "") ||
+      formData.secondary !== (user.tempAddress.secondary || "") ||
+      formData.postalCode !== (user.tempAddress.postalCode || "")
+    ) {
+      try {
+        await dispatch(
+          updateUserAddress({
+            address: {
+              country: formData.country || "",
+              city: formData.city || "",
+              street: formData.street || "",
+              secondary: formData.secondary || "",
+              postalCode: formData.postalCode || "",
+            },
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error("Update address failed:", error);
+      }
+    } else {
+      console.log("No changes to update");
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg border border-gray-100 p-6">
-      <h2 className="text-xl font-medium mb-6">Delevery Address</h2>
+      <h2 className="text-xl font-medium mb-6">Delivery Address</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm text-gray-500 mb-1">Country</label>
           <input
             type="text"
-            name="name"
+            name="country"
             className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             value={formData.country}
             onChange={handleInputChange}
@@ -217,7 +248,7 @@ export const AddressTab = () => {
           <label className="block text-sm text-gray-500 mb-1">City</label>
           <input
             type="text"
-            name="name"
+            name="city"
             className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             value={formData.city}
             onChange={handleInputChange}
@@ -227,7 +258,7 @@ export const AddressTab = () => {
           <label className="block text-sm text-gray-500 mb-1">Street</label>
           <input
             type="text"
-            name="name"
+            name="street"
             className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             value={formData.street}
             onChange={handleInputChange}
@@ -237,7 +268,7 @@ export const AddressTab = () => {
           <label className="block text-sm text-gray-500 mb-1">Secondary</label>
           <input
             type="text"
-            name="name"
+            name="secondary"
             className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             value={formData.secondary}
             onChange={handleInputChange}
@@ -246,8 +277,8 @@ export const AddressTab = () => {
         <div>
           <label className="block text-sm text-gray-500 mb-1">Postal</label>
           <input
-            type="email"
-            name="email"
+            type="text"
+            name="postalCode"
             className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             value={formData.postalCode}
             onChange={handleInputChange}
@@ -256,8 +287,12 @@ export const AddressTab = () => {
       </div>
 
       <div className="mt-8">
-        <button className="bg-black text-white px-6 py-3 rounded-md hover:bg-gray-900 transition">
-          Update Address
+        <button
+          className="bg-black text-white px-6 py-3 rounded-md hover:bg-gray-600 transition disabled:bg-gray-500 cursor-pointer"
+          onClick={handleUpdateAddress}
+          disabled={loading}
+        >
+          {loading ? "Updating..." : "Update Address"}
         </button>
       </div>
     </div>
