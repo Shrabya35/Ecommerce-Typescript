@@ -47,6 +47,10 @@ export async function GET(req: Request) {
           path: "product.product",
           select: "-image",
         })
+        .populate({
+          path: "user",
+          select: "-password -wishlist -shoppingBag -tempAddress",
+        })
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 })

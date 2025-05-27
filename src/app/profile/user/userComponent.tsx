@@ -74,7 +74,7 @@ export default function UserProfile() {
                   <p className="text-sm text-gray-500">{user?.email}</p>
                 </div>
               </div>
-              <button className="w-full flex items-center justify-between p-3 text-left rounded-md  text-pink-500 hover:text-pink-400 cursor-pointer">
+              <div className="w-full flex items-center justify-between p-3 text-left rounded-md  text-pink-500 hover:text-pink-400 cursor-pointer">
                 <button
                   className="flex items-center cursor-pointer"
                   onClick={handleLogout}
@@ -82,7 +82,7 @@ export default function UserProfile() {
                   <MdLogout size={18} className="mr-3" />
                   <span>Log Out</span>
                 </button>
-              </button>
+              </div>
             </div>
 
             <nav className="space-y-1">

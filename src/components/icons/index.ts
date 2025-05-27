@@ -58,6 +58,8 @@ import {
   MapPin,
   User,
   Package,
+  Check,
+  CreditCard,
 } from "lucide-react";
 
 export {
@@ -111,4 +113,6 @@ export {
   MapPin,
   User,
   Package,
+  Check,
+  CreditCard,
 };

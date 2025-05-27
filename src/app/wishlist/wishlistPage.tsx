@@ -22,6 +22,7 @@ import {
 } from "@/components/icons";
 import { NoWishlist } from "@/assets";
 import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 import { formatNumberNPR } from "@/utils/formatNumberNpr";
 
 interface Product {
@@ -260,7 +261,7 @@ const WishlistPage = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-pink-500"></div>
+          <ClipLoader size={40} color="#E91E63" />
         </div>
       ) : wishlist && wishlist.length > 0 ? (
         <>

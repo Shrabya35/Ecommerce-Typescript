@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +8,7 @@ import { formatDate } from "@/utils/formatDate";
 import { formatNumberNPR } from "@/utils/formatNumberNpr";
 import { greetings } from "@/constants";
 import { User, Package } from "@/components/icons";
+import { ClipLoader } from "react-spinners";
 
 export const ProfileTab = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -92,12 +94,11 @@ export const ProfileTab = () => {
       </div>
 
       {loading && userOrders.length === 0 && (
-        <div className="text-center text-gray-500">Loading orders...</div>
+        <div className="flex items-baseline-center justify-center">
+          <ClipLoader size={40} color="#E91E63" />
+        </div>
       )}
       {error && <div className="text-center text-red-500">Error: {error}</div>}
-      {!loading && userOrders.length === 0 && !error && (
-        <div className="text-center text-gray-500">No orders found</div>
-      )}
 
       {!loading && userOrders.length === 0 ? (
         <div className="text-center py-12">
@@ -137,9 +138,15 @@ export const ProfileTab = () => {
                   <div className="font-medium">
                     ₹ {formatNumberNPR(order.price)}
                   </div>
-                  <button className="text-sm text-pink-500 hover:text-pink-400 cursor-pointer mt-1">
+                  <Link
+                    className="text-sm text-pink-500 hover:text-pink-400 cursor-pointer mt-1"
+                    href={{
+                      pathname: "/order-detail",
+                      query: { id: order._id },
+                    }}
+                  >
                     View Details
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -3,13 +3,23 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { IProduct } from "@/interface";
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Order {
   _id?: string;
   product: {
     product: IProduct | null;
     quantity: number;
   }[];
-  user: string;
+  user: User;
   price: number;
   address: {
     country: string;
@@ -28,6 +38,7 @@ export interface Order {
 
 interface UserOrdersState {
   userOrders: Order[];
+  singleOrder: Order | null;
   loading: boolean;
   error: string | null;
   page: number;
@@ -38,8 +49,12 @@ interface UserOrdersState {
     pending: number;
     processing: number;
     completed: number;
-    cancelled: 0;
+    cancelled: number; // Fixed typo (was 0)
   };
+}
+
+interface FetchSingleOrderArgs {
+  id: string;
 }
 
 export const fetchUserOrders = createAsyncThunk<
@@ -77,6 +92,14 @@ export const fetchUserOrders = createAsyncThunk<
               ? item.product
               : null,
         })),
+        user:
+          order.user && typeof order.user === "object"
+            ? {
+                _id: order.user._id || "",
+                name: order.user.name || "Unknown User",
+                email: order.user.email || "No email provided",
+              }
+            : { _id: "", name: "Unknown User", email: "No email provided" },
       }));
 
       return {
@@ -98,8 +121,53 @@ export const fetchUserOrders = createAsyncThunk<
   }
 );
 
+export const fetchSingleOrder = createAsyncThunk<
+  Order,
+  FetchSingleOrderArgs,
+  { rejectValue: string }
+>("userOrders/fetchSingleOrder", async ({ id }, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`/api/order/${id}`, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+
+    const data = response.data;
+    if (!data.success) {
+      throw new Error(data.message || "Failed to fetch order");
+    }
+
+    const transformedOrder = {
+      ...data.order,
+      product: data.order.product.map((item: any) => ({
+        ...item,
+        product:
+          item.product && typeof item.product === "object"
+            ? item.product
+            : null,
+      })),
+      user:
+        data.order.user && typeof data.order.user === "object"
+          ? {
+              _id: data.order.user._id || "",
+              name: data.order.user.name || "Unknown User",
+              email: data.order.user.email || "No email provided",
+            }
+          : { _id: "", name: "Unknown User", email: "No email provided" },
+    };
+
+    return transformedOrder;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.message || error.message || "Error fetching order";
+    toast.error(message);
+    return rejectWithValue(message);
+  }
+});
+
 const initialState: UserOrdersState = {
   userOrders: [],
+  singleOrder: null,
   loading: false,
   error: null,
   page: 1,
@@ -123,6 +191,7 @@ const userOrdersSlice = createSlice({
     },
     clearUserOrders: (state) => {
       state.userOrders = [];
+      state.singleOrder = null;
       state.page = 1;
       state.total = 0;
       state.totalPages = 0;
@@ -165,6 +234,22 @@ const userOrdersSlice = createSlice({
       .addCase(fetchUserOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Unknown error";
+      })
+      .addCase(fetchSingleOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchSingleOrder.fulfilled,
+        (state, action: PayloadAction<Order>) => {
+          state.loading = false;
+          state.singleOrder = action.payload;
+          state.error = null;
+        }
+      )
+      .addCase(fetchSingleOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
