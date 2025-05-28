@@ -2,7 +2,7 @@ import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/authSlice";
 import { clearCategory } from "@/redux/slices/categorySlice";
-import { clearOrder, clearCurrentOrder } from "@/redux/slices/orderSlice";
+import { clearOrder } from "@/redux/slices/orderSlice";
 import { clearProduct } from "@/redux/slices/productSlice";
 import { clearUserOrders } from "@/redux/slices/userOrderSlice";
 import { clearWishlist } from "@/redux/slices/wishlistSlice";
@@ -17,7 +17,6 @@ export const useLogout = () => {
       dispatch(logout());
       dispatch(clearCategory());
       dispatch(clearOrder());
-      dispatch(clearCurrentOrder());
       dispatch(clearProduct());
       dispatch(clearUserOrders());
       dispatch(clearWishlist());

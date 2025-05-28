@@ -60,6 +60,7 @@ import {
   Package,
   Check,
   CreditCard,
+  Eye,
 } from "lucide-react";
 
 export {
@@ -115,4 +116,5 @@ export {
   Package,
   Check,
   CreditCard,
+  Eye,
 };

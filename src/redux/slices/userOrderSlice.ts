@@ -49,7 +49,7 @@ interface UserOrdersState {
     pending: number;
     processing: number;
     completed: number;
-    cancelled: number; // Fixed typo (was 0)
+    cancelled: number;
   };
 }
 

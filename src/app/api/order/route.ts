@@ -5,6 +5,7 @@ import Product from "@/models/Product";
 import Order from "@/models/Order";
 import connectDB from "@/config/connectDB";
 import { getUserFromRequest } from "@/lib/auth";
+import Admin from "@/app/profile/admin/page";
 
 interface Address {
   country: string;
@@ -17,6 +18,11 @@ interface Address {
 interface OrderParams {
   address: Address;
   mode: 0 | 1;
+}
+
+interface SearchParams {
+  page: number;
+  limit: number;
 }
 
 interface UserDoc extends mongoose.Document {
@@ -205,6 +211,96 @@ export async function POST(req: NextRequest) {
         success: false,
         message: error.message || "Failed to process order request",
       },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(req: NextRequest) {
+  await connectDB();
+  const url = new URL(req.url);
+  const searchParams = url.searchParams;
+
+  const params: SearchParams = {
+    page: parseInt(searchParams.get("page") || "1"),
+    limit: parseInt(searchParams.get("limit") || "9"),
+  };
+
+  const { page, limit } = params;
+  const skip = (page - 1) * limit;
+
+  try {
+    const { isAdmin, user } = await getUserFromRequest(req);
+    if (!user || !mongoose.Types.ObjectId.isValid(user._id)) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+    if (!isAdmin) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden: Admins only" },
+        { status: 403 }
+      );
+    }
+
+    const totalData = await Order.countDocuments();
+
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: "product.product",
+        select: "-image",
+      })
+      .populate({
+        path: "user",
+        select: "-password -wishlist -shoppingBag -tempAddress",
+      });
+
+    const processingOrders = orders.filter(
+      (order) => order.status === "processing"
+    );
+    const completedOrders = orders.filter(
+      (order) => order.status === "completed"
+    );
+    const cancelledOrders = orders.filter(
+      (order) => order.status === "cancelled"
+    );
+
+    const totalProcessing = await Order.countDocuments({
+      status: "processing",
+    });
+    const totalCompleted = await Order.countDocuments({ status: "completed" });
+    const totalCancelled = await Order.countDocuments({ status: "cancelled" });
+
+    const totalPages = Math.ceil(totalData / limit);
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          orders,
+          processingOrders,
+          completedOrders,
+          cancelledOrders,
+          totalData,
+          totals: {
+            processing: totalProcessing,
+            completed: totalCompleted,
+            cancelled: totalCancelled,
+          },
+          page,
+          totalPages,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
       { status: 500 }
     );
   }

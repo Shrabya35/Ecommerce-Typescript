@@ -38,10 +38,10 @@ const sidebarItems: SidebarItem[] = [
     label: "Order",
     icon: <MdInventory2 size={20} />,
     children: [
-      { label: "All Orders", path: "/profile/admin/order" },
-      { label: "Delivered", path: "/profile/admin/product/add" },
-      { label: "Processing", path: "/profile/admin/exam" },
-      { label: "cancelled", path: "/profile/admin/exam" },
+      { label: "All Orders", path: "/profile/admin/order/all" },
+      { label: "Processing", path: "/profile/admin/order/processing" },
+      { label: "Completed", path: "/profile/admin/order/completed" },
+      { label: "Cancelled", path: "/profile/admin/order/cancelled" },
     ],
   },
   {
