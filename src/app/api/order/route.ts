@@ -5,7 +5,6 @@ import Product from "@/models/Product";
 import Order from "@/models/Order";
 import connectDB from "@/config/connectDB";
 import { getUserFromRequest } from "@/lib/auth";
-import Admin from "@/app/profile/admin/page";
 
 interface Address {
   country: string;

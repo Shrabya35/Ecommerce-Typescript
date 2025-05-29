@@ -101,7 +101,6 @@ export async function PATCH(
       );
     }
 
-    // Authenticate and authorize user
     const { isAdmin, user } = await getUserFromRequest(req);
     if (!user || !mongoose.Types.ObjectId.isValid(user._id)) {
       return NextResponse.json(
@@ -116,7 +115,6 @@ export async function PATCH(
       );
     }
 
-    // Find the order
     const order = await Order.findById(orderId);
     if (!order) {
       return NextResponse.json(
@@ -125,7 +123,6 @@ export async function PATCH(
       );
     }
 
-    // Check if order status is processing
     if (order.status !== "processing") {
       return NextResponse.json(
         {
@@ -136,7 +133,6 @@ export async function PATCH(
       );
     }
 
-    // Update the status
     order.status = status;
     await order.save();
 

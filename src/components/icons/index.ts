@@ -61,6 +61,10 @@ import {
   Check,
   CreditCard,
   Eye,
+  Hourglass,
+  CheckCircle,
+  XCircle,
+  IndianRupee,
 } from "lucide-react";
 
 export {
@@ -117,4 +121,8 @@ export {
   Check,
   CreditCard,
   Eye,
+  Hourglass,
+  CheckCircle,
+  XCircle,
+  IndianRupee,
 };

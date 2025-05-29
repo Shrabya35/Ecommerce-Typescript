@@ -6,6 +6,7 @@ import wishlistReducer from "./slices/wishlistSlice";
 import ShoppingBagReducer from "./slices/shoppingBagSlice";
 import UserOrderReducer from "./slices/userOrderSlice";
 import OrderReducer from "./slices/orderSlice";
+import DashboardReducer from "./slices/dashboardSlice";
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
@@ -19,6 +20,7 @@ export const store = configureStore({
     wishlist: wishlistReducer,
     shoppingBag: ShoppingBagReducer,
     userOrder: UserOrderReducer,
+    dashboard: DashboardReducer,
   },
 });
 

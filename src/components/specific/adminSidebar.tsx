@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
   MdDashboard,
+  Package,
   MdCategory,
   MdInventory2,
   MdPeople,
@@ -36,7 +37,7 @@ const sidebarItems: SidebarItem[] = [
   },
   {
     label: "Order",
-    icon: <MdInventory2 size={20} />,
+    icon: <Package size={20} />,
     children: [
       { label: "All Orders", path: "/profile/admin/order/all" },
       { label: "Processing", path: "/profile/admin/order/processing" },
