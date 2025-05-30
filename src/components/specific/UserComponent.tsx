@@ -7,12 +7,23 @@ import { updateUserAddress } from "@/redux/slices/authSlice";
 import { formatDate } from "@/utils/formatDate";
 import { formatNumberNPR } from "@/utils/formatNumberNpr";
 import { greetings } from "@/constants";
-import { User, Package } from "@/components/icons";
+import {
+  User,
+  Package,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@/components/icons";
 import { ClipLoader } from "react-spinners";
+import { getRecentlyViewed } from "@/utils/recentlyViewed";
+import { IProduct } from "@/interface";
+import StaticProductCarousel from "../section/StaticProductCarousel";
 
 export const ProfileTab = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [recentlyViewed, setRecentlyViewed] = useState<IProduct[]>([]);
   const [greeting, setGreeting] = useState("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const limit = 6;
 
   useEffect(() => {
     const randomGreeting =
@@ -21,8 +32,24 @@ export const ProfileTab = () => {
   }, []);
 
   const { user } = useSelector((state: RootState) => state.auth);
-  const { userOrders, loading, error, page, total, totalPages, statusSummary } =
+  const { userOrders, loading, error, total, totalPages, statusSummary } =
     useSelector((state: RootState) => state.userOrder);
+
+  useEffect(() => {
+    setRecentlyViewed(getRecentlyViewed(user?._id ?? null));
+  }, [user?._id]);
+
+  useEffect(() => {
+    if (!user?._id) {
+      setRecentlyViewed([]);
+    }
+  }, [user?._id]);
+
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(fetchUserOrders({ page: currentPage, limit }));
+    }
+  }, [dispatch, currentPage, user?._id]);
 
   const stats = [
     {
@@ -47,9 +74,9 @@ export const ProfileTab = () => {
     },
   ];
 
-  const handleLoadMore = () => {
-    if (page < totalPages) {
-      dispatch(fetchUserOrders({ page: page + 1, limit: 6 }));
+  const handlePageChange = (newPage: number): void => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
     }
   };
 
@@ -94,7 +121,7 @@ export const ProfileTab = () => {
       </div>
 
       {loading && userOrders.length === 0 && (
-        <div className="flex items-baseline-center justify-center">
+        <div className="flex items-center justify-center">
           <ClipLoader size={40} color="#E91E63" />
         </div>
       )}
@@ -154,18 +181,113 @@ export const ProfileTab = () => {
         </div>
       )}
 
-      {page < totalPages && (
-        <div className="mt-6 text-center">
-          <button
-            onClick={handleLoadMore}
-            disabled={loading}
-            className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {loading ? "Loading..." : "Load More"}
-          </button>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-4">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium ${
+                currentPage === 1
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium ${
+                currentPage === totalPages
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Showing{" "}
+                <span className="font-medium">
+                  {userOrders?.length ? (currentPage - 1) * limit + 1 : 0}
+                </span>{" "}
+                to{" "}
+                <span className="font-medium">
+                  {Math.min(currentPage * limit, total)}
+                </span>{" "}
+                of <span className="font-medium">{total}</span> orders
+              </p>
+            </div>
+            <div>
+              <nav
+                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
+              >
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`relative inline-flex items-center rounded-l-md px-2 py-2 ${
+                    currentPage === 1
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-400 hover:bg-gray-50"
+                  }`}
+                >
+                  <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum: number;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                        currentPage === pageNum
+                          ? "z-10 bg-pink-500 text-white focus-visible:outline-offset-0"
+                          : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`relative inline-flex items-center rounded-r-md px-2 py-2 ${
+                    currentPage === totalPages
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-400 hover:bg-gray-50"
+                  }`}
+                >
+                  <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </nav>
+            </div>
+          </div>
         </div>
+      )}
+
+      {recentlyViewed.length > 0 && (
+        <StaticProductCarousel
+          title="Recently Viewed"
+          products={recentlyViewed}
+          className="mt-6"
+        />
       )}
 
       <div className="bg-white rounded-lg border border-gray-100 p-6 mt-6">

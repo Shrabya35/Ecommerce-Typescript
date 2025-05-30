@@ -1,5 +1,5 @@
-import { AppDispatch } from "@/redux/store";
-import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/redux/slices/authSlice";
 import { clearCategory } from "@/redux/slices/categorySlice";
 import { clearOrder } from "@/redux/slices/orderSlice";
@@ -11,9 +11,11 @@ import { toast } from "react-toastify";
 
 export const useLogout = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const performLogout = async () => {
     try {
+      localStorage.removeItem(`recentlyViewed_${user?._id}`);
       dispatch(logout());
       dispatch(clearCategory());
       dispatch(clearOrder());

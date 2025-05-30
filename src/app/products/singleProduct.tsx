@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchSingleProduct } from "@/redux/slices/productSlice";
@@ -17,6 +17,7 @@ import ProductCarousel from "@/components/section/productCarousel";
 import { formatNumberNPR } from "@/utils/formatNumberNpr";
 import { Heart, Share2, FaShoppingBag } from "@/components/icons";
 import { toast } from "react-toastify";
+import { IProduct } from "@/interface";
 
 interface SingleProductProps {
   slug: string;
@@ -36,6 +37,8 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
       discountedPrice?: number;
       description: string;
       _id: string;
+      slug: string;
+      type?: string;
     } | null;
     loading: boolean;
   };
@@ -45,6 +48,9 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
   );
   const { bag = [] } = useSelector(
     (state: RootState) => state.shoppingBag || { bag: [] }
+  );
+  const { user } = useSelector(
+    (state: RootState) => state.auth || { user: null }
   );
 
   const isInWishlist = Boolean(
@@ -63,12 +69,70 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
       bag.some((item: any) => item && item.product._id === productData._id)
   );
 
+  const getStorageKey = () => (user?._id ? `recentlyViewed_${user._id}` : null);
+
+  const storeRecentlyViewed = () => {
+    if (!productData?._id || !user?._id) return;
+
+    try {
+      const storageKey = getStorageKey();
+      if (!storageKey) return;
+
+      let recentlyViewed: IProduct[] = [];
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        try {
+          recentlyViewed = JSON.parse(stored);
+          if (!Array.isArray(recentlyViewed)) {
+            recentlyViewed = [];
+          }
+        } catch (error) {
+          console.error(
+            `Error parsing ${storageKey} from localStorage:`,
+            error
+          );
+          recentlyViewed = [];
+        }
+      }
+
+      const productToStore: IProduct = {
+        _id: productData._id,
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        type: productData.type || "unknown",
+        slug: productData.slug,
+        discount: productData.discount || 0,
+        discountedPrice: productData.discountedPrice || productData.price,
+        category:
+          typeof productData.category === "object" &&
+          productData.category !== null
+            ? productData.category.name
+            : productData.category || "Unknown",
+        quantity: productData.quantity || 0,
+      };
+
+      const updated = [
+        productToStore,
+        ...recentlyViewed.filter((p) => p._id !== productData._id),
+      ];
+      const limited = updated.slice(0, 10);
+      localStorage.setItem(storageKey, JSON.stringify(limited));
+    } catch (error) {
+      console.error("Error updating localStorage:", error);
+    }
+  };
+
   useEffect(() => {
     if (slug) {
       dispatch(fetchSingleProduct({ slug }));
       dispatch(fetchWishlist({ page: 1, limit: 100 }));
     }
   }, [dispatch, slug]);
+
+  useEffect(() => {
+    storeRecentlyViewed();
+  }, [productData, user?._id]);
 
   const toggleWishlist = () => {
     if (!productData || !productData._id) {
@@ -209,7 +273,7 @@ const SingleProduct: React.FC<SingleProductProps> = ({ slug }) => {
               </span>
             </div>
 
-            <h1 className="text-2xl text-gray-800 font-medium mb-2 ">
+            <h1 className="text-2xl text-gray-800 font-medium mb-2">
               {productData.name}
             </h1>
 
